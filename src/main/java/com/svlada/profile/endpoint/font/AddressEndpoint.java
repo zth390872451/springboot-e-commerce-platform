@@ -1,4 +1,4 @@
-package com.svlada.profile.endpoint;
+package com.svlada.profile.endpoint.font;
 
 import com.svlada.common.WebUtil;
 import com.svlada.common.request.CustomResponse;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.svlada.common.request.CustomResponseBuilder.success;
 
 @RestController
-@RequestMapping("/api/address")
+@RequestMapping("/api/font/address")
 public class AddressEndpoint {
 
     @Autowired

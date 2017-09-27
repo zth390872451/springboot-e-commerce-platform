@@ -67,6 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter() throws Exception {
+        //跳过拦截
         List<String> pathsToSkip = Arrays.asList(TOKEN_REFRESH_ENTRY_POINT, FORM_BASED_LOGIN_ENTRY_POINT);
         SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, TOKEN_BASED_AUTH_ENTRY_POINT);
         JwtTokenAuthenticationProcessingFilter filter
@@ -92,33 +93,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable() // We don't need CSRF for JWT based authentication
                 .exceptionHandling()
-//                .and().authorizeRequests().antMatchers("/api/**").permitAll()
                 .authenticationEntryPoint(this.authenticationEntryPoint)
-
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
                 .and()
                 .authorizeRequests()
+                .antMatchers("/api/back/**").hasAnyRole("ADMIN")//后台需要ADMIN权限
+                .antMatchers("/api/font/**").hasAnyRole("MEMBER")//前台需要MEMBER权限
                 .antMatchers(FORM_BASED_LOGIN_ENTRY_POINT).permitAll() // Login end-point
                 .antMatchers(TOKEN_REFRESH_ENTRY_POINT).permitAll() // Token refresh end-point
                 .antMatchers("/console").permitAll() // H2 Console Dash-board - only for testing
                 .and()
                 .authorizeRequests()
-                .antMatchers(TOKEN_BASED_AUTH_ENTRY_POINT/*,"/back/**"*/).authenticated()
-                /*.and()
-                .authorizeRequests()
-                .antMatchers( "/back/**").hasAuthority("ROLE_ADMIN")*//*.hasRole("ADMIN").access("hasRole('ROLE_ADMIN')")*//*
-                .anyRequest().authenticated()*/
+                .antMatchers(TOKEN_BASED_AUTH_ENTRY_POINT).authenticated()
                 .and()
                 .addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(buildAjaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
-      /*  http
-                .antMatcher("/back/**")
-                .authorizeRequests()
-                .anyRequest().permitAll()*//*.hasRole("ADMIN")*/;
+                .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+        ;
     }
-    //AbstractRequestMatcherRegistry
 }

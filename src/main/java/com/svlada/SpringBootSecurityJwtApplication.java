@@ -14,7 +14,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
  */
 @SpringBootApplication
 @EnableConfigurationProperties
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
 public class SpringBootSecurityJwtApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootSecurityJwtApplication.class, args);

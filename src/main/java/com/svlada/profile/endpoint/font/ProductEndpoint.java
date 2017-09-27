@@ -1,4 +1,4 @@
-package com.svlada.profile.endpoint;
+package com.svlada.profile.endpoint.font;
 
 import com.svlada.common.request.CustomResponse;
 import com.svlada.profile.endpoint.dto.ProductDto;
@@ -13,7 +13,7 @@ import java.util.List;
 import static com.svlada.common.request.CustomResponseBuilder.success;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/font/product")
 public class ProductEndpoint {
 
     @Autowired

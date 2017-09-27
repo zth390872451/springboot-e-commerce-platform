@@ -21,7 +21,7 @@ import static com.svlada.common.request.CustomResponseBuilder.success;
 import static com.svlada.common.request.CustomResponseStatus.*;
 
 @RestController
-@RequestMapping("/back/category")
+@RequestMapping("/api/back/category")
 public class CategoryBackEndpoint {
 
     @Autowired

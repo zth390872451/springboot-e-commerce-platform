@@ -1,4 +1,4 @@
-package com.svlada.profile.endpoint;
+package com.svlada.profile.endpoint.font;
 
 import com.svlada.common.request.CustomResponse;
 import com.svlada.profile.endpoint.dto.OrderDto;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.svlada.common.request.CustomResponseBuilder.success;
 
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/font/order")
 public class OrderEndpoint {
 
     @Autowired

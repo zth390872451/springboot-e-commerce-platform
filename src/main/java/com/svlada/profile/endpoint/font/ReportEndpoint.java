@@ -1,4 +1,4 @@
-package com.svlada.profile.endpoint;
+package com.svlada.profile.endpoint.font;
 
 import com.svlada.common.request.CustomResponse;
 import com.svlada.entity.Order;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.svlada.common.request.CustomResponseBuilder.success;
 
 @RestController
-@RequestMapping("/api/report")
+@RequestMapping("/api/font/report")
 public class ReportEndpoint {
 
     @Autowired
