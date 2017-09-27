@@ -11,7 +11,6 @@ import java.util.Date;
 public class ActivityDto implements Serializable{
 
     @ApiModelProperty(notes="活动ID",required = false)
-    @NotNull(message = "不能为空")
     private Long id;
 
     @ApiModelProperty(notes="活动名称")
@@ -23,7 +22,6 @@ public class ActivityDto implements Serializable{
     private String content;
 
     @ApiModelProperty(notes="活动对应的商品")
-    @NotNull(message = "不能为空")
     private Long[] productIds;
 
     @ApiModelProperty(notes="个人最多购买数量")
@@ -38,9 +36,8 @@ public class ActivityDto implements Serializable{
     @NotNull(message = "不能为空")
     private Date endDate;
 
-    @ApiModelProperty(notes="活动状态")
-    @NotNull(message = "不能为空")
-    private Boolean status;
+    @ApiModelProperty(notes="活动状态,true:正常上线;false:下线过期")
+    private Boolean status = true;
 
     public Boolean getStatus() {
         return status;

@@ -87,8 +87,6 @@ public class CategoryBackEndpoint {
      * 查询商品类别
      * @return
      */
-//    @Secured({ "ROLE_MEMBER" })
-//    @Secured({ "ROLE_PREMIUM_MEMBER" })
     @ApiOperation(value="分页查询所有的类别条目", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", value = "分页参数,默认为0", paramType = "query", dataType = "Int", required = false),

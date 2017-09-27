@@ -1,7 +1,7 @@
 package com.svlada.profile.endpoint.font;
 
 import com.svlada.common.request.CustomResponse;
-import com.svlada.profile.endpoint.dto.ProductDto;
+import com.svlada.profile.endpoint.dto.MarkDto;
 import com.svlada.entity.product.Product;
 import com.svlada.user.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class ProductEndpoint {
     private ProductRepository productRepository;
 
     @PostMapping(value = "/add")
-    public CustomResponse add(@RequestBody ProductDto dto) {
+    public CustomResponse add(@RequestBody MarkDto dto) {
         Product product = new Product();
         productRepository.save(product);
         return success();
@@ -33,14 +33,14 @@ public class ProductEndpoint {
     }
 
     @PutMapping(value = "/update")
-    public CustomResponse update(@RequestBody ProductDto dto) {
+    public CustomResponse update(@RequestBody MarkDto dto) {
         Product product = productRepository.findOne(dto.getId());
         productRepository.save(product);
         return success();
     }
 
     @PutMapping(value = "/delete")
-    public CustomResponse delete(@RequestBody ProductDto dto) {
+    public CustomResponse delete(@RequestBody MarkDto dto) {
         Product product= productRepository.findOne(dto.getId());
         productRepository.save(product);
         return success();

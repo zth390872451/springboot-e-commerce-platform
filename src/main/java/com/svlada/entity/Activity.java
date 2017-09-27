@@ -1,5 +1,6 @@
 package com.svlada.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.svlada.entity.product.Product;
 
 import javax.persistence.*;
@@ -17,26 +18,26 @@ public class Activity implements Serializable{
     private Long id;
 
     @Column(unique = true)
-    private String name;
+    private String name;//活动名称
 
     private Date startDate;
 
     private Date endDate;
 
-    private String content;
+    private String content;//内容描述
 
     private Boolean status;//状态
 
-    @OneToMany(cascade={CascadeType.ALL})
-    @JoinColumn(name="product_id")
+    @OneToMany
+    @JsonIgnore
     private List<Product> productList;//参与活动的产品
 
     private Integer maxSaleCount;//个人最大限购数量
 
-    private Integer category;//活动类别
+    private Integer type;//活动类别：1、促销活动(低价、特价活动，时间限制) 2、限购活动(购买数量限制,时间限制) 3、卖家新品(卖家主推新品)
 
-    public static final Boolean STATUS_EXPIRE = false;
-    public static final Boolean STATUS_NORMAL = true;
+    public static final Boolean STATUS_EXPIRE = false;//下线
+    public static final Boolean STATUS_NORMAL = true;//正常在线
 
     public Long getId() {
         return id;
@@ -102,11 +103,11 @@ public class Activity implements Serializable{
         this.maxSaleCount = maxSaleCount;
     }
 
-    public Integer getCategory() {
-        return category;
+    public Integer getType() {
+        return type;
     }
 
-    public void setCategory(Integer category) {
-        this.category = category;
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

@@ -1,5 +1,7 @@
 package com.svlada.entity.product;
 
+import com.svlada.entity.Activity;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -20,7 +22,7 @@ public class Product implements Serializable {
 //    private Long unit;//商品单位。默认“item:件”
     private Long hit;// 浏览次数
     private Long stock;//库存
-    private Integer status;//商品状态。1：新增，2：已上架，3：已下架
+    private Integer status;//商品状态。0：新增，1：已上架，2：已下架
 
     public static final Integer status_add = 0;
     public static final Integer status_up = 1;
@@ -47,12 +49,16 @@ public class Product implements Serializable {
     private List<DetailsImage> detailsImages;
 
     //搜索条件
-    private Boolean isNew;// 是否新品。n：否，true：是新品上市
-    private Boolean specialPrice;// 是否特价。n：否，true：是促销商品
+    private Boolean isNew = false;// 是否新品。n：否，true：是新品上市
+    private Boolean specialPrice = false;// 是否特价。n：否，true：是促销商品
     private Long saleCount;//销售数量
-    private Boolean recommend;//true：是推荐商品
-    private Boolean mailFree;//true:是卖家包邮
-    private Long activityID;//null:不是 >0,则是活动商品(活动id)
+    private Boolean recommend = false;//true：是推荐商品
+    private Boolean mailFree = false;//true:是卖家包邮
+
+//    private Long activityID;//null:不是 >0,则是活动商品(活动id)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "activity_id")
+    private Activity activity;
 
     //后台录入
     private Long createID;// 录入人
@@ -65,9 +71,6 @@ public class Product implements Serializable {
     private String giftID;//赠品ID
 
 
-    public static final Integer Product_status_add = 1;//新增商品
-    public static final Integer Product_status_y = 2;//已上架
-    public static final Integer Product_status_n = 3;//已下架
 
     public String getCode() {
         return code;
@@ -229,14 +232,13 @@ public class Product implements Serializable {
         this.mailFree = mailFree;
     }
 
-    public Long getActivityID() {
-        return activityID;
+    public Activity getActivity() {
+        return activity;
     }
 
-    public void setActivityID(Long activityID) {
-        this.activityID = activityID;
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
-
 
     public Date getCreateTime() {
         return createTime;
@@ -286,15 +288,4 @@ public class Product implements Serializable {
         this.createID = createID;
     }
 
-    public static Integer getProduct_status_add() {
-        return Product_status_add;
-    }
-
-    public static Integer getProduct_status_y() {
-        return Product_status_y;
-    }
-
-    public static Integer getProduct_status_n() {
-        return Product_status_n;
-    }
 }

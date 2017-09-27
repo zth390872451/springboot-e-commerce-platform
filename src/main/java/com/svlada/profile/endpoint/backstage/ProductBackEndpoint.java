@@ -8,7 +8,8 @@ import com.svlada.entity.product.Category;
 import com.svlada.entity.product.DetailsImage;
 import com.svlada.entity.product.MajorImage;
 import com.svlada.entity.product.Product;
-import com.svlada.profile.endpoint.dto.ProductDto;
+import com.svlada.profile.endpoint.dto.BasicProductInfoDto;
+import com.svlada.profile.endpoint.dto.MarkDto;
 import com.svlada.profile.endpoint.dto.ProductInfoDescDto;
 import com.svlada.user.repository.CategoryRepository;
 import com.svlada.user.repository.DetailsImageRepository;
@@ -46,6 +47,7 @@ public class ProductBackEndpoint {
     @Autowired
     private DetailsImageRepository detailsImageRepository;
 
+
     /**
      * 录入商品
      *
@@ -54,41 +56,71 @@ public class ProductBackEndpoint {
      */
     @ApiOperation(value="商品基本信息录入", notes="商品录入：基本信息录入")
     @ApiImplicitParams({
-           /* @ApiImplicitParam(name = "name", value = "商品名称", paramType = "body", dataType = "Long", required = true),
-            @ApiImplicitParam(name = "title", value = "商品页面标题", paramType = "body", dataType = "String", required = true),
-            @ApiImplicitParam(name = "introduce", value = "商品简介", paramType = "body", dataType = "String", required = true),
-            @ApiImplicitParam(name = "title", value = "商品页面标题", paramType = "body", dataType = "String", required = true),
-            @ApiImplicitParam(name = "description", value = "商品页面描述", paramType = "body", dataType = "String", required = true),
-            @ApiImplicitParam(name = "searchKey", value = "商品页面搜索关键字，多个关键字以逗号分隔", paramType = "body", dataType = "String", required = true),
-            @ApiImplicitParam(name = "price", value = "定价,单位分", paramType = "body", dataType = "Long", required = true),
-            @ApiImplicitParam(name = "nowPrice", value = "现价,单位分", paramType = "body", dataType = "Long", required = true),
-            @ApiImplicitParam(name = "stock", value = "库存", paramType = "body", dataType = "Long", required = true),*/
-//            @ApiImplicitParam(name = "dto", value = "商品所属类别", paramType = "body", dataType = "ProductInfoDescDto", required = true)
     })
-    @PostMapping(value = "/add")
-    public CustomResponse add(@RequestBody @Valid ProductInfoDescDto dto) {
-        Category category = categoryRepository.findOne(dto.getCategoryId());
-        if (category==null){
-            return fail(_40000,"categoryId对应类别记录不存在!");
-        }
+    @PostMapping(value = "/storage")
+    public CustomResponse add(@RequestBody @Valid BasicProductInfoDto dto) {
         Product product = productRepository.findOneByCode(dto.getCode());
         if (product!=null){
             return fail(_40000,"商品编号不能重复!");
         }
         product = new Product();
         product.setCode(dto.getCode());
-        product.setCategory(category);
-        product.setName(dto.getName());
-        product.setTitle(dto.getTitle());
-        product.setIntroduce(dto.getIntroduce());
-        product.setPrice(dto.getPrice());
-        product.setNowPrice(dto.getNowPrice());
-        product.setSearchKey(dto.getSearchKey());
-        product.setStock(dto.getStock());
-        product.setDescription(dto.getDescription());
-        product.setStatus(Product.status_add);
 
+        if(dto.getCategoryId()!=null && dto.getCategoryId()>0){
+            Category category = categoryRepository.findOne(dto.getCategoryId());
+            if (category==null){
+                return fail(_40000,"categoryId对应类别记录不存在!");
+            }
+            product.setCategory(category);
+        }
+        User currentUser = WebUtil.getCurrentUser();
+        product.setCreateID(1L/*currentUser.getId()*/);
         product.setCreateTime(new Date());
+        productRepository.save(product);
+        return success();
+    }
+    /**
+     * 录入商品
+     * @param dto
+     * @return
+     */
+    @ApiOperation(value="商品信息设置[修改]", notes="商品参数设置")
+    @ApiImplicitParams({
+    })
+    @PostMapping(value = "/update")
+    public CustomResponse add(@RequestBody @Valid ProductInfoDescDto dto) {
+        Product product = productRepository.findOneByCode(dto.getCode());
+        if (product==null){
+            return fail(_40401,"商品不存在!");
+        }
+        if (!StringUtils.isEmpty(dto.getName())){
+            product.setName(dto.getName());
+        }
+        if (!StringUtils.isEmpty(dto.getTitle())){
+            product.setTitle(dto.getTitle());
+        }
+        if (!StringUtils.isEmpty(dto.getIntroduce())){
+            product.setIntroduce(dto.getIntroduce());
+        }
+        if (!StringUtils.isEmpty(dto.getPrice())){
+            product.setPrice(dto.getPrice());
+        }
+        if (!StringUtils.isEmpty(dto.getNowPrice())){
+            product.setNowPrice(dto.getNowPrice());
+        }
+        if (!StringUtils.isEmpty(dto.getName())){
+            product.setSearchKey(dto.getSearchKey());
+        }
+        if (!StringUtils.isEmpty(dto.getStock())){
+            product.setStock(dto.getStock());
+        }
+        if (!StringUtils.isEmpty(dto.getDescription())){
+            product.setDescription(dto.getDescription());
+        }
+        if (!StringUtils.isEmpty(dto.getStatus())){
+            product.setStatus(dto.getStatus());
+        }
+        product.setUpdateTime(new Date());
         User currentUser = WebUtil.getCurrentUser();
         product.setCreateID(1L/*currentUser.getId()*/);
         productRepository.save(product);
@@ -143,32 +175,41 @@ public class ProductBackEndpoint {
         return success();
     }
 
-    /**
-     * 产品后台信息展示，选取活动列表
-     * 产品营销设定：
-     * 活动特价
-     * 促销商品
-     * 限时抢购
-     * 卖家包邮
-     * @param id
-     * @param dto
-     * @return
-     */
-    @ApiOperation(value="商品营销策略设置", notes="营销策略：活动、包邮、促销、限时")
+
+    @ApiOperation(value="商品营销策略设置", notes="营销策略：是否包邮、卖家强推、新品上市、特价优惠")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "商品ID", paramType = "path", dataType = "Long", required = true)
+            @ApiImplicitParam(name = "code", value = "商品编号", paramType = "path", dataType = "String", required = true)
     })
-    @PutMapping(value = "/mark/{id}")
-    public CustomResponse updateProduct(@PathVariable("id") Long id,@RequestBody @Valid ProductDto dto) {
-        Product product = productRepository.findOne(id);
-        productRepository.save(product);
+    @PutMapping(value = "/mark/{code}")
+    public CustomResponse updateProduct(@PathVariable("code") String code,
+                                        @RequestBody @Valid MarkDto dto) {
+        Product product = productRepository.findOneByCode(code);
+        if (product!=null){
+            if (dto.getMailFree()!=null){
+                product.setMailFree(dto.getMailFree());
+            }
+            if (dto.getNew()!=null){
+                product.setNew(dto.getNew());
+            }
+            if (dto.getRecommend()!=null){
+                product.setRecommend(dto.getRecommend());
+            }
+            if (dto.getSpecialPrice()!=null){
+                if (dto.getSpecialPrice() && dto.getNowPrice()!=null){
+                    product.setNowPrice(dto.getNowPrice());
+                }
+                if (dto.getSpecialPrice() && dto.getPrice()!=null){
+                    product.setPrice(dto.getPrice());
+                }
+                product.setSpecialPrice(dto.getSpecialPrice());
+            }
+            productRepository.save(product);
+        }
         return success();
     }
 
     @ApiImplicitParams({
-//            @ApiImplicitParam(name = "productId", value = "商品ID", paramType = "path", dataType = "Long", required = true),
-//            @ApiImplicitParam(name = "majorImageFiles", value = "商品页面轮播图", paramType = "query", dataType = "file", required = false),
-//            @ApiImplicitParam(name = "detailImageFiles", value = "商品详情页面图", paramType = "query", dataType = "file", required = false)
+            @ApiImplicitParam(name = "id", value = "商品ID", paramType = "path", dataType = "Long", required = true),
     })
     @ApiResponses(
         {
@@ -180,25 +221,11 @@ public class ProductBackEndpoint {
     public CustomResponse get(@PathVariable("id") Long id) {
         Product product = productRepository.findOne(id);
         if (product==null){
-            return fail(_40000,"ID对应的商品不存在!");
+            return fail(_40000,"商品ID对应的商品不存在!");
         }
         return success(product);
     }
 
-    @PutMapping(value = "/update")
-    public CustomResponse update(@RequestBody ProductDto dto) {
-        Product product = productRepository.findOne(dto.getId());
-        product.setUpdateTime(new Date());
-        product.setUpdateUserId(WebUtil.getCurrentUser().getId());
-        productRepository.save(product);
-        return success();
-    }
 
-    @PutMapping(value = "/delete")
-    public CustomResponse delete(@RequestBody ProductDto dto) {
-        Product product = productRepository.findOne(dto.getId());
-        productRepository.save(product);
-        return success();
-    }
 
 }
