@@ -53,7 +53,7 @@ public enum CustomResponseStatus {
 
 	private final int code;
 	private final String reasonPhrase;
-	
+
 	private CustomResponseStatus(int code, String reasonPhrase) {
 		this.code = code;
 		this.reasonPhrase = reasonPhrase;
@@ -73,7 +73,7 @@ public enum CustomResponseStatus {
 	public Integer getCode() {
 		return code;
 	}
-	
+
 	/**
 	 * Return the enum constant of this type with the specified numeric value.
 	 *
@@ -91,7 +91,7 @@ public enum CustomResponseStatus {
 		}
 		throw new IllegalArgumentException("No matching constant for [" + code + "]");
 	}
-	
+
 	/**
 	 * Return a string representation of this status code.
 	 */
@@ -99,5 +99,5 @@ public enum CustomResponseStatus {
 	public String toString() {
 		return Integer.toString(code);
 	}
-	
+
 }

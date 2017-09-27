@@ -22,7 +22,12 @@ public class Product implements Serializable {
     private Long stock;//库存
     private Integer status;//商品状态。1：新增，2：已上架，3：已下架
 
+    public static final Integer status_add = 0;
+    public static final Integer status_up = 1;
+    public static final Integer status_down = 2;
     //商品信息
+    @OneToOne
+    @JoinColumn(name="category_id")
     private Category category;// 商品分类ID
     @Column(unique = true)
     private String code;//商品编号
@@ -33,10 +38,11 @@ public class Product implements Serializable {
     private String searchKey;//搜索关键字
 
     //商品图片信息
-    @OneToMany(cascade={CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name="majorImage_id")
     private List<MajorImage> majorImages;
-    @OneToMany(cascade={CascadeType.ALL})
+
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name="detailImage_id")
     private List<DetailsImage> detailsImages;
 
@@ -49,7 +55,7 @@ public class Product implements Serializable {
     private Long activityID;//null:不是 >0,则是活动商品(活动id)
 
     //后台录入
-    private String createAccount;//创建者
+    private Long createID;// 录入人
     private Date createTime;// 录入时间
     private Long updateUserId;//商品修改者
     private Date updateTime;//修改时间
@@ -57,7 +63,7 @@ public class Product implements Serializable {
 
     private Long score;//赠送积分
     private String giftID;//赠品ID
-    private Long createID;// 录入人
+
 
     public static final Integer Product_status_add = 1;//新增商品
     public static final Integer Product_status_y = 2;//已上架
@@ -231,13 +237,6 @@ public class Product implements Serializable {
         this.activityID = activityID;
     }
 
-    public String getCreateAccount() {
-        return createAccount;
-    }
-
-    public void setCreateAccount(String createAccount) {
-        this.createAccount = createAccount;
-    }
 
     public Date getCreateTime() {
         return createTime;

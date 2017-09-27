@@ -5,12 +5,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @ApiModel(description = "类别信息DTO")
 public class CategoryDto implements Serializable{
-    @NotNull(message = "记录id不能为空")
+
     @ApiModelProperty(notes="类别id，查询不为null")
     private Long id;
 

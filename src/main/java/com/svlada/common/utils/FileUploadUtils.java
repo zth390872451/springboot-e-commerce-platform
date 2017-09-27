@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.svlada.common.utils.DateUtils.PART_DATE_FORMAT;
+
 public class FileUploadUtils {
 
     /**
@@ -19,8 +21,11 @@ public class FileUploadUtils {
             List<String> filePaths = new ArrayList<>();
             for (MultipartFile file : files){
                 String tomcatPath = ApplicationSupport.getValue("tomcatPath");
-                String path = uploadPath + DateUtils.getFormatDate(null, "yyyy/MM/dd") + "/";
-                File dir = new File(tomcatPath + path);
+                String path = tomcatPath + "/" + uploadPath + "/" +
+                    DateUtils.getFormatDate(null, PART_DATE_FORMAT) + "/"
+                    + UUID.randomUUID().toString()
+                    +"/"+ file.getName() + "/";
+                File dir = new File(path);
                 if (!dir.exists()) {
                     if (!dir.mkdirs()) {
                         try {
@@ -31,9 +36,11 @@ public class FileUploadUtils {
                         }
                     }
                 }
-                String fileName = UUID.randomUUID().toString() + "." + getFileSuffix(file.getOriginalFilename());
-                file.transferTo(new File(dir, fileName));
-                filePaths.add(path + fileName);
+                String originalFilename = file.getOriginalFilename();
+                String fileName = file.getName() + getFileSuffix(file.getOriginalFilename());
+                File target = new File(dir, originalFilename);
+                file.transferTo(target);
+                filePaths.add(target.getAbsolutePath());
             }
             return filePaths;
         } catch (Exception e) {

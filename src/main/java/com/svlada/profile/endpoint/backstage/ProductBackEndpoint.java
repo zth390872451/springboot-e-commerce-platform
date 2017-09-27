@@ -11,10 +11,10 @@ import com.svlada.entity.product.Product;
 import com.svlada.profile.endpoint.dto.ProductDto;
 import com.svlada.profile.endpoint.dto.ProductInfoDescDto;
 import com.svlada.user.repository.CategoryRepository;
+import com.svlada.user.repository.DetailsImageRepository;
+import com.svlada.user.repository.MajorImageRepository;
 import com.svlada.user.repository.ProductRepository;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +41,10 @@ public class ProductBackEndpoint {
 
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private MajorImageRepository majorImageRepository;
+    @Autowired
+    private DetailsImageRepository detailsImageRepository;
 
     /**
      * 录入商品
@@ -82,10 +86,11 @@ public class ProductBackEndpoint {
         product.setSearchKey(dto.getSearchKey());
         product.setStock(dto.getStock());
         product.setDescription(dto.getDescription());
+        product.setStatus(Product.status_add);
 
         product.setCreateTime(new Date());
         User currentUser = WebUtil.getCurrentUser();
-        product.setCreateID(currentUser.getId());
+        product.setCreateID(1L/*currentUser.getId()*/);
         productRepository.save(product);
         return success();
     }
@@ -101,8 +106,8 @@ public class ProductBackEndpoint {
     @ApiOperation(value="商品图片信息录入", notes="商品录入：图片信息录入")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "productId", value = "商品ID", paramType = "path", dataType = "Long", required = true),
-            @ApiImplicitParam(name = "majorImageFiles", value = "商品页面轮播图", paramType = "query", dataType = "file", required = false),
-            @ApiImplicitParam(name = "detailImageFiles", value = "商品详情页面图", paramType = "query", dataType = "file", required = false)
+            @ApiImplicitParam(name = "majorImageFiles", value = "商品页面轮播图", paramType = "body", dataType = "file", required = false),
+            @ApiImplicitParam(name = "detailImageFiles", value = "商品详情页面图", paramType = "body", dataType = "file", required = false)
     })
     @PostMapping(value = "/upload/{productId}")
     public CustomResponse upload(@PathVariable("productId") Long productId,
@@ -114,13 +119,14 @@ public class ProductBackEndpoint {
             return fail(_40401);
         }
         String uuid = UUID.randomUUID().toString();
-        String path = product.getId() + File.separator + product.getName() + uuid + File.separator;
+        String path = product.getId() + File.separator+ product.getName() + File.separator+ uuid + File.separator;
 
         if (!StringUtils.isEmpty(majorImageFiles)){
             List<String> filePaths = FileUploadUtils.saveCommonFile(majorImageFiles, path);
             List<MajorImage> majorImages = filePaths.stream().map(imageUrl -> new MajorImage(product, imageUrl)).collect(Collectors.toList());
             List<MajorImage> images = product.getMajorImages();
             images.addAll(majorImages);
+            majorImageRepository.save(majorImages);
             product.setMajorImages(images);
         }
         if (!StringUtils.isEmpty(detailImageFiles)){
@@ -128,10 +134,12 @@ public class ProductBackEndpoint {
             List<DetailsImage> detailImages = detailImagesPaths.stream().map(imageUrl -> new DetailsImage(product, imageUrl)).collect(Collectors.toList());
             List<DetailsImage> images = product.getDetailsImages();
             images.addAll(detailImages);
+            detailsImageRepository.save(detailImages);
             product.setDetailsImages(images);
         }
-        product.setCreateID(user.getId());
+        product.setCreateID(1L/*user.getId()*/);
         product.setCreateTime(new Date());
+        productRepository.save(product);
         return success();
     }
 
@@ -158,13 +166,22 @@ public class ProductBackEndpoint {
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "productId", value = "商品ID", paramType = "path", dataType = "Long", required = true),
-            @ApiImplicitParam(name = "majorImageFiles", value = "商品页面轮播图", paramType = "query", dataType = "file", required = false),
-            @ApiImplicitParam(name = "detailImageFiles", value = "商品详情页面图", paramType = "query", dataType = "file", required = false)
+//            @ApiImplicitParam(name = "productId", value = "商品ID", paramType = "path", dataType = "Long", required = true),
+//            @ApiImplicitParam(name = "majorImageFiles", value = "商品页面轮播图", paramType = "query", dataType = "file", required = false),
+//            @ApiImplicitParam(name = "detailImageFiles", value = "商品详情页面图", paramType = "query", dataType = "file", required = false)
     })
+    @ApiResponses(
+        {
+            @ApiResponse(code = 400, message = "参数错误"),
+            @ApiResponse(code = 200, message = "成功",response = Product.class),
+        }
+    )
     @GetMapping("/get/{id}")
     public CustomResponse get(@PathVariable("id") Long id) {
         Product product = productRepository.findOne(id);
+        if (product==null){
+            return fail(_40000,"ID对应的商品不存在!");
+        }
         return success(product);
     }
 

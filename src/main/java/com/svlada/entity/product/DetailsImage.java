@@ -1,15 +1,20 @@
 package com.svlada.entity.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "DetailsImage")
-public class DetailsImage {
+public class DetailsImage implements Serializable{
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @ManyToOne
+    @JoinColumn(name="product_id")
+    @JsonIgnore
     private Product product;
 
     private String imageUrl;
