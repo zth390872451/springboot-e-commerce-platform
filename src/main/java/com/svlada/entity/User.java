@@ -17,13 +17,16 @@ public class User {
     @Column(name="password")
     private String password;
 
-    @OneToMany(cascade={CascadeType.ALL})
+   /* @OneToMany(cascade={CascadeType.ALL})
     @JoinTable(name="USER_PARTNER",
             joinColumns={@JoinColumn(name="source_id",referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="partner_id",referencedColumnName="id")}
-    )
-    private List<User> partners;
+    )*/
+//    @JsonIgnore
+//    private List<User> partners;
 
+    /*@OneToMany
+    private List<Partner> partners;*/
 
     @OneToMany
     @JoinColumn(name="APP_USER_ID", referencedColumnName="ID")
@@ -192,13 +195,13 @@ public class User {
         this.lastLoginDate = lastLoginDate;
     }
 
-    public List<User> getPartners() {
+    /*public List<User> getPartners() {
         return partners;
     }
 
     public void setPartners(List<User> partners) {
         this.partners = partners;
-    }
+    }*/
 
     public Long getId() {
         return id;

@@ -1,5 +1,6 @@
 package com.svlada.profile.endpoint.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -30,10 +31,12 @@ public class ActivityDto implements Serializable{
 
     @ApiModelProperty(notes="活动开始时间")
     @NotNull(message = "不能为空")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startDate;
 
     @ApiModelProperty(notes="活动结束时间")
     @NotNull(message = "不能为空")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endDate;
 
     @ApiModelProperty(notes="活动状态,true:正常上线;false:下线过期")

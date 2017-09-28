@@ -3,40 +3,45 @@ package com.svlada;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.ConversionServiceFactoryBean;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
-/**
- * Sample application for demonstrating security with JWT Tokens
- *
- * @author vladimir.stankovic
- *
- * Aug 3, 2016
- */
+import java.util.HashSet;
+import java.util.Set;
+
+
 @SpringBootApplication
 @EnableConfigurationProperties
 @EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
-//@EnableAutoConfiguration(exclude = {MultipartAutoConfiguration.class})
 public class SpringBootSecurityJwtApplication {
 
-   /* @Bean
-    public MultipartConfigElement multipartConfigElement() {
-        MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setMaxFileSize("128KB");
-        factory.setMaxRequestSize("128KB");
-        return factory.createMultipartConfig();
-    }*/
+	@Bean(name="conversionService")
+	public ConversionServiceFactoryBean serviceFactoryBean() {
+		ConversionServiceFactoryBean bean = new ConversionServiceFactoryBean();
+		Set<Converter> converters = new HashSet<>();
+		converters.add(new StringToDateConverter());
+		bean.setConverters(converters);
+		return bean;
+	}
 
-    /*@Bean(name = "multipartResolver")
-    public MultipartResolver multipartResolver()
-    {
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        // resolver.setDefaultEncoding("UTF-8");
-        // resolver.setResolveLazily(true);// resolveLazily属性启用是为了推迟文件解析，以在在UploadAction中捕获文件大小异常
-        // resolver.setMaxInMemorySize(40960);
-        resolver.setMaxUploadSize(10 * 1024 * 1024);// 上传文件大小 5M 5*1024*1024
-        return resolver;
-    }
-*/
+	/*@Bean
+	public Converter<String, Date> StringToDateConverter() {
+		return new Converter<String, Date>() {
+			@Override
+			public Date convert(String source) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date date = null;
+				try {
+					date = sdf.parse((String) source);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return date;
+			}
+		};
+	}*/
     public static void main(String[] args) {
 		SpringApplication.run(SpringBootSecurityJwtApplication.class, args);
 	}

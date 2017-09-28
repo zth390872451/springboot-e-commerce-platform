@@ -7,14 +7,12 @@ import com.svlada.entity.Address;
 import com.svlada.entity.User;
 import com.svlada.profile.endpoint.dto.AddressDto;
 import com.svlada.user.repository.AddressRepository;
+import com.svlada.user.service.AddressService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static com.svlada.common.request.CustomResponseBuilder.fail;
 import static com.svlada.common.request.CustomResponseBuilder.success;
@@ -25,6 +23,8 @@ public class AddressEndpoint {
 
     @Autowired
     private AddressRepository addressRepository;
+    @Autowired
+    private AddressService addressService;
 
     @ApiOperation(value = "添加收货地址", notes = "")
     @ApiImplicitParam(name = "dto", value = "活动信息", paramType = "body", required = true, dataType = "AddressDto")
@@ -125,24 +125,17 @@ public class AddressEndpoint {
     }
 
 
+
     @ApiOperation(value = "删除收货地址", notes = "")
     @ApiImplicitParam(name = "id", value = "地址记录ID", paramType = "path", required = true, dataType = "Long")
     @DeleteMapping("/delete/{id}")
     public CustomResponse delete(@PathVariable("id") Long id) {
         User user = WebUtil.getCurrentUser();
-        addressRepository.deleteOneByIdAndUserId(id, user.getId());
-        Address defaultAddress = addressRepository.findOneByUserIdAndIsDefault(user.getId(),true);
-        if (defaultAddress == null) {//无默认地址，则按照ID降序,设置第一条记录作为默认地址
-            Sort sort = new Sort(Sort.Direction.DESC, "id");
-            List<Address> all = addressRepository.findAll(sort);
-            if (all != null && all.size() > 0) {
-                Address address = all.get(0);
-                address.setDefault(true);
-                addressRepository.save(address);
-            }
-        }
+        addressService.deleteAddress(id, user.getId());
         return success();
     }
+
+
 
 
     @ApiOperation(value = "获取收货地址详情", notes = "")

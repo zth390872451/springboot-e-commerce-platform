@@ -2,8 +2,11 @@ package com.svlada.profile.endpoint.backstage;
 
 import com.svlada.common.WebUtil;
 import com.svlada.common.request.CustomResponse;
+import com.svlada.common.utils.FileUploadUtils;
 import com.svlada.entity.User;
 import com.svlada.entity.product.Category;
+import com.svlada.entity.product.DetailsImage;
+import com.svlada.entity.product.MajorImage;
 import com.svlada.entity.product.Product;
 import com.svlada.profile.endpoint.dto.BasicProductInfoDto;
 import com.svlada.profile.endpoint.dto.MarkDto;
@@ -21,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.svlada.common.request.CustomResponseBuilder.fail;
 import static com.svlada.common.request.CustomResponseBuilder.success;
@@ -29,7 +34,7 @@ import static com.svlada.common.request.CustomResponseStatus._40000;
 import static com.svlada.common.request.CustomResponseStatus._40401;
 
 @RestController
-@RequestMapping("/back/product")
+@RequestMapping("/api/back/product")
 public class ProductBackEndpoint {
 
     @Autowired
@@ -136,11 +141,9 @@ public class ProductBackEndpoint {
             @ApiImplicitParam(name = "majorImageFiles", value = "商品页面轮播图", paramType = "body", dataType = "file", required = false),
             @ApiImplicitParam(name = "detailImageFiles", value = "商品详情页面图", paramType = "body", dataType = "file", required = false)
     })
-//    @PostMapping(value = "/upload/{productId}")
-    @RequestMapping(value = "/upload/{productId}", method = RequestMethod.POST, consumes = {"multipart/form-data","application/x-www-form-urlencoded"} ,
-        produces = { "application/json", "application/x-www-form-urlencoded" })
+    @PostMapping(value = "/upload/{productId}")
     public CustomResponse upload(@PathVariable("productId") Long productId,
-                                 @RequestParam(value = "majorImageFiles",required = false) MultipartFile majorImageFiles,
+                                 @RequestParam(value = "majorImageFiles",required = false) MultipartFile[] majorImageFiles,
                                  @RequestParam(value = "detailImageFiles",required = false) MultipartFile[] detailImageFiles) {
         User user = WebUtil.getCurrentUser();
         Product product = productRepository.findOne(productId);
@@ -150,22 +153,22 @@ public class ProductBackEndpoint {
         String uuid = UUID.randomUUID().toString();
         String path = product.getId() + File.separator+ product.getName() + File.separator+ uuid + File.separator;
 
-        /*if (!StringUtils.isEmpty(majorImageFiles)){
+        if (!StringUtils.isEmpty(majorImageFiles)){
             List<String> filePaths = FileUploadUtils.saveCommonFile(majorImageFiles, path);
             List<MajorImage> majorImages = filePaths.stream().map(imageUrl -> new MajorImage(product, imageUrl)).collect(Collectors.toList());
             List<MajorImage> images = product.getMajorImages();
             images.addAll(majorImages);
             majorImageRepository.save(majorImages);
             product.setMajorImages(images);
-        }*/
-        /*if (!StringUtils.isEmpty(detailImageFiles)){
+        }
+        if (!StringUtils.isEmpty(detailImageFiles)){
             List<String> detailImagesPaths = FileUploadUtils.saveCommonFile(detailImageFiles, path);
             List<DetailsImage> detailImages = detailImagesPaths.stream().map(imageUrl -> new DetailsImage(product, imageUrl)).collect(Collectors.toList());
             List<DetailsImage> images = product.getDetailsImages();
             images.addAll(detailImages);
             detailsImageRepository.save(detailImages);
             product.setDetailsImages(images);
-        }*/
+        }
         product.setCreateID(user.getId());
         product.setCreateTime(new Date());
         productRepository.save(product);
@@ -208,12 +211,6 @@ public class ProductBackEndpoint {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "商品ID", paramType = "path", dataType = "Long", required = true),
     })
-    @ApiResponses(
-        {
-            @ApiResponse(code = 400, message = "参数错误"),
-            @ApiResponse(code = 200, message = "成功",response = Product.class),
-        }
-    )
     @GetMapping("/get/{id}")
     public CustomResponse get(@PathVariable("id") Long id) {
         Product product = productRepository.findOne(id);

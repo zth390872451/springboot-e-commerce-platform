@@ -26,7 +26,7 @@ import static com.svlada.common.request.CustomResponseBuilder.fail;
 import static com.svlada.common.request.CustomResponseBuilder.success;
 
 @RestController
-@RequestMapping("/back/activity")
+@RequestMapping("api/back/activity")
 public class ActivityBackEndpoint {
 
     @Autowired
@@ -46,11 +46,7 @@ public class ActivityBackEndpoint {
     @ApiImplicitParam(name = "dto", value = "活动信息", paramType = "body", required = true, dataType = "ActivityDto")
     @PostMapping(value = "/add")
     public CustomResponse add(@RequestBody @Valid ActivityDto dto) {
-        Activity activity = activityRepository.findOneByName(dto.getName());
-        if (activity != null) {
-            return fail();
-        }
-        activity = new Activity();
+        Activity activity = new Activity();
         activity.setName(dto.getName());
         activity.setContent(dto.getContent());
         activity.setMaxSaleCount(dto.getMaxSaleCount());
@@ -148,6 +144,16 @@ public class ActivityBackEndpoint {
         Page<Activity> page = activityRepository.findAll(pageable);
         return success(page.getContent());
     }
+
+    @GetMapping(value = "/get/{id}")
+    public CustomResponse get(@PathVariable("id") Long id) {
+        Activity activity= activityRepository.findOne(id);
+        if (activity==null){
+            return fail(CustomResponseStatus._40401,"活动ID对应的记录不存在!");
+        }
+        return success();
+    }
+
 
 
 
