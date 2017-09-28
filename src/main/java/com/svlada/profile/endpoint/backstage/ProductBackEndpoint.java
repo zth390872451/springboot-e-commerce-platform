@@ -175,12 +175,12 @@ public class ProductBackEndpoint {
 
     @ApiOperation(value="商品营销策略设置", notes="营销策略：是否包邮、卖家强推、新品上市、特价优惠")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "code", value = "商品编号", paramType = "path", dataType = "String", required = true)
+            @ApiImplicitParam(name = "productId", value = "商品ID", paramType = "path", dataType = "Long", required = true)
     })
-    @PutMapping(value = "/mark/{code}")
-    public CustomResponse updateProduct(@PathVariable("code") String code,
+    @PutMapping(value = "/mark/{productId}")
+    public CustomResponse updateProduct(@PathVariable("productId") Long productId,
                                         @RequestBody @Valid MarkDto dto) {
-        Product product = productRepository.findOneByCode(code);
+        Product product = productRepository.findOne(productId);
         if (product!=null){
             if (dto.getMailFree()!=null){
                 product.setMailFree(dto.getMailFree());
