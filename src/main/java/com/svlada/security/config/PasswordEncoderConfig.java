@@ -6,7 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * PasswordEncoderConfig
- * 
+ *
  * @author vladimir.stankovic
  *
  * Dec 27, 2016

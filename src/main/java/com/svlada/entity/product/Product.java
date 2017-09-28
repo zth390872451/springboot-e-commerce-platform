@@ -55,8 +55,7 @@ public class Product implements Serializable {
     private Boolean recommend = false;//true：是推荐商品
     private Boolean mailFree = false;//true:是卖家包邮
 
-//    private Long activityID;//null:不是 >0,则是活动商品(活动id)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "activity_id")
     private Activity activity;
 

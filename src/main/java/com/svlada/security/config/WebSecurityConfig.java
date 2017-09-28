@@ -100,7 +100,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/back/**").hasAnyRole("ADMIN")//后台需要ADMIN权限
-                .antMatchers("/api/font/**").hasAnyRole("MEMBER")//前台需要MEMBER权限
+                .antMatchers("/api/font/**").permitAll()/*.hasAnyRole("MEMBER")*///前台需要MEMBER权限
                 .antMatchers(FORM_BASED_LOGIN_ENTRY_POINT).permitAll() // Login end-point
                 .antMatchers(TOKEN_REFRESH_ENTRY_POINT).permitAll() // Token refresh end-point
                 .antMatchers("/console").permitAll() // H2 Console Dash-board - only for testing

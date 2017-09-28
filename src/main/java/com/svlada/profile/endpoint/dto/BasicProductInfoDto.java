@@ -11,7 +11,6 @@ import java.io.Serializable;
 public class BasicProductInfoDto implements Serializable{
 
     @ApiModelProperty(notes="商品名称")
-    @NotNull(message = "不能为空")
     private String name;// 商品名称
 
     @ApiModelProperty(notes="商品的唯一编号")

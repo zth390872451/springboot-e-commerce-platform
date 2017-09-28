@@ -20,7 +20,15 @@ spring:
     show_sql: true
     generate-ddl: true #(false)
     hibernate:
-        ddl-auto: update #(none)
+        ddl-auto: update
+  http:
+    multipart:
+      enabled: true
+
+
+tomcatPath: D:\share
+
+
 #spring.datasource:
 #  url: "jdbc:h2:mem:testdb"
 #  driverClassName: org.h2.Driver

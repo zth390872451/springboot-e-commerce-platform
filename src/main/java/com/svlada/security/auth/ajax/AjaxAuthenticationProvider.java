@@ -1,8 +1,8 @@
 package com.svlada.security.auth.ajax;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.svlada.entity.User;
+import com.svlada.security.model.UserContext;
+import com.svlada.user.service.DatabaseUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,12 +17,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import com.svlada.entity.User;
-import com.svlada.security.model.UserContext;
-import com.svlada.user.service.DatabaseUserService;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * 
+ *
  * @author vladimir.stankovic
  *
  * Aug 3, 2016
@@ -46,19 +45,23 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
 
         User user = userService.getByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-        
-        if (!encoder.matches(password, user.getPassword())) {
+        /*if (!encoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("Authentication Failed. Username or Password not valid.");
+        }*/
+        if (user==null || !user.getPassword().equals(password)){
+            throw new BadCredentialsException("Authentication Failed.username: "+username +"is not found!");
         }
-
+        if (!user.getPassword().equals(password)){
+            throw new BadCredentialsException("Authentication Failed.Password is invalid");
+        }
         if (user.getRoles() == null) throw new InsufficientAuthenticationException("User has no roles assigned");
-        
+
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getRole().authority()))
                 .collect(Collectors.toList());
-        
+
         UserContext userContext = UserContext.create(user.getUsername(), authorities);
-        
+
         return new UsernamePasswordAuthenticationToken(userContext, null, userContext.getAuthorities());
     }
 

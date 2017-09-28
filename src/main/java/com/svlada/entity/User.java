@@ -10,10 +10,10 @@ public class User {
     @Id @Column(name="ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     @Column(name="username")
     private String username;
-    
+
     @Column(name="password")
     private String password;
 
@@ -24,10 +24,13 @@ public class User {
     )
     private List<User> partners;
 
-    
+
     @OneToMany
     @JoinColumn(name="APP_USER_ID", referencedColumnName="ID")
     private List<UserRole> roles;
+
+
+
 
     private String nickName;
 //    private String accountType;//会员类型，qq,sinawb,alipay
@@ -51,13 +54,15 @@ public class User {
     private Date lastLoginDate;
 
     public User() { }
-    
+
     public User(Long id, String username, String password, List<UserRole> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.roles = roles;
     }
+
+
 
     public void setId(Long id) {
         this.id = id;

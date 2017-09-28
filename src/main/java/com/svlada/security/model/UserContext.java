@@ -1,12 +1,12 @@
 package com.svlada.security.model;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.util.StringUtils;
+
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.GrantedAuthority;
-
 /**
- * 
+ *
  * @author vladimir.stankovic
  *
  * Aug 4, 2016
@@ -19,9 +19,9 @@ public class UserContext {
         this.username = username;
         this.authorities = authorities;
     }
-    
+
     public static UserContext create(String username, List<GrantedAuthority> authorities) {
-        if (StringUtils.isBlank(username)) throw new IllegalArgumentException("Username is blank: " + username);
+        if (StringUtils.isEmpty(username)) throw new IllegalArgumentException("Username is blank: " + username);
         return new UserContext(username, authorities);
     }
 

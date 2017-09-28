@@ -6,7 +6,7 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 
+ *
  * @author vladimir.stankovic
  *
  * Aug 3, 2016
@@ -39,6 +39,10 @@ public class WebUtil {
 
     public static User getCurrentUser(){
         User user = userThreadLocal.get();
+        if (user==null){
+            user = new User();
+            user.setId(1L);
+        }
         return user;
     }
 

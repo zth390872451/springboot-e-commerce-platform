@@ -1,13 +1,13 @@
 package com.svlada.security.auth.jwt.extractor;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  * An implementation of {@link TokenExtractor} extracts token from
  * Authorization: Bearer scheme.
- * 
+ *
  * @author vladimir.stankovic
  *
  * Aug 5, 2016
@@ -18,7 +18,7 @@ public class JwtHeaderTokenExtractor implements TokenExtractor {
 
     @Override
     public String extract(String header) {
-        if (StringUtils.isBlank(header)) {
+        if (StringUtils.isEmpty(header)) {
             throw new AuthenticationServiceException("Authorization header cannot be blank!");
         }
 
