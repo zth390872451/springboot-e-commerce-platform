@@ -2,7 +2,7 @@ package com.svlada.profile.endpoint.font;
 
 import com.svlada.common.request.CustomResponse;
 import com.svlada.entity.Order;
-import com.svlada.user.repository.OrderRepository;
+import com.svlada.component.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +13,7 @@ import static com.svlada.common.request.CustomResponseBuilder.success;
 
 @RestController
 @RequestMapping("/api/font/report")
-public class ReportEndpoint {
+public class ReportStaticEndpoint {
 
     @Autowired
     private OrderRepository orderRepository;

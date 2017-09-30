@@ -50,8 +50,8 @@ public class SpringBootSecurityJwtApplication {
     private static final Logger log = LoggerFactory.getLogger(SpringApplication.class);
     public static void main(String[] args) throws UnknownHostException {
 //        ConfigurableApplicationContext app = SpringApplication.run(SpringBootSecurityJwtApplication.class, args);
-        SpringApplication app = new SpringApplication(SpringBootSecurityJwtApplication.class,args);
-        Environment env = app.run(args).getEnvironment();
+        SpringApplication app = new SpringApplication(SpringBootSecurityJwtApplication.class);
+        Environment env = app.run().getEnvironment();
         log.info("Access URLs:\n----------------------------------------------------------\n\t" +
                 "Local: \t\thttp://127.0.0.1:{}\n\t" +
                 "External: \thttp://{}:{}\n----------------------------------------------------------",

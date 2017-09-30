@@ -3,7 +3,7 @@ package com.svlada.profile.endpoint.font;
 import com.svlada.common.request.CustomResponse;
 import com.svlada.profile.endpoint.dto.MarkDto;
 import com.svlada.entity.product.Product;
-import com.svlada.user.repository.ProductRepository;
+import com.svlada.component.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;

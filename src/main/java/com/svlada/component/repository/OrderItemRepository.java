@@ -1,4 +1,4 @@
-package com.svlada.user.repository;
+package com.svlada.component.repository;
 
 import com.svlada.entity.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * Aug 16, 2016
  */
-public interface OrderItemlRepository extends JpaRepository<OrderItem, Long> {
+public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
 }

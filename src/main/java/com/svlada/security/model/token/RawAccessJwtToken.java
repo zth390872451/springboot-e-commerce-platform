@@ -4,7 +4,7 @@ import com.svlada.common.WebUtil;
 import com.svlada.common.utils.ApplicationSupport;
 import com.svlada.entity.User;
 import com.svlada.security.exceptions.JwtExpiredTokenException;
-import com.svlada.user.repository.UserRepository;
+import com.svlada.component.repository.UserRepository;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

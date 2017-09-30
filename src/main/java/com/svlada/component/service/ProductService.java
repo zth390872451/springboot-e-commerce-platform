@@ -1,6 +1,6 @@
-package com.svlada.user.service;
+package com.svlada.component.service;
 
-import com.svlada.user.repository.ProductRepository;
+import com.svlada.component.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

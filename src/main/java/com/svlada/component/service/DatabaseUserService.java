@@ -1,4 +1,4 @@
-package com.svlada.user.service;
+package com.svlada.component.service;
 
 import java.util.Optional;
 
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.svlada.entity.User;
 import com.svlada.security.UserService;
-import com.svlada.user.repository.UserRepository;
+import com.svlada.component.repository.UserRepository;
 
 /**
  * Mock implementation.

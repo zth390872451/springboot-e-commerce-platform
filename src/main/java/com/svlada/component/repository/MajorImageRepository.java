@@ -1,4 +1,4 @@
-package com.svlada.user.repository;
+package com.svlada.component.repository;
 
 import com.svlada.entity.product.MajorImage;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * End-point for retrieving logged-in user details.
+ * End-point for retrieving logged-in component details.
  * 
  * @author vladimir.stankovic
  *

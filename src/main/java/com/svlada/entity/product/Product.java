@@ -22,6 +22,9 @@ public class Product implements Serializable {
 //    private Long unit;//商品单位。默认“item:件”
     private Long hit;// 浏览次数
     private Long stock;//库存
+    private Long favorite;//收藏数量
+    private Long badComment;//差评数量
+    private Long goodComment;//好评数量
     private Integer status;//商品状态。0：新增，1：已上架，2：已下架
 
     public static final Integer status_add = 0;
@@ -70,6 +73,29 @@ public class Product implements Serializable {
     private String giftID;//赠品ID
 
 
+    public Long getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(Long favorite) {
+        this.favorite = favorite;
+    }
+
+    public Long getBadComment() {
+        return badComment;
+    }
+
+    public void setBadComment(Long badComment) {
+        this.badComment = badComment;
+    }
+
+    public Long getGoodComment() {
+        return goodComment;
+    }
+
+    public void setGoodComment(Long goodComment) {
+        this.goodComment = goodComment;
+    }
 
     public String getCode() {
         return code;

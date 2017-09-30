@@ -1,7 +1,7 @@
-package com.svlada.user.service;
+package com.svlada.component.service;
 
 import com.svlada.entity.Address;
-import com.svlada.user.repository.AddressRepository;
+import com.svlada.component.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

@@ -3,7 +3,7 @@ package com.svlada.profile.endpoint.backstage;
 import com.svlada.common.request.CustomResponse;
 import com.svlada.entity.product.Category;
 import com.svlada.profile.endpoint.dto.CategoryDto;
-import com.svlada.user.repository.CategoryRepository;
+import com.svlada.component.repository.CategoryRepository;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;

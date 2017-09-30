@@ -3,6 +3,7 @@ package com.svlada.common.utils;
 import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -33,4 +34,76 @@ public class DateUtils {
         SimpleDateFormat sdf = new SimpleDateFormat(xFormat);
         return sdf.format(date);
     }
+
+    /**
+     * 获取当天的开始时间
+     * @return
+     */
+    public static Date getStartTimeOfToday(){
+        Calendar ca = Calendar.getInstance();
+        ca.set(Calendar.HOUR_OF_DAY, ca.getActualMinimum(Calendar.HOUR_OF_DAY));
+        ca.set(Calendar.MINUTE, ca.getActualMinimum(Calendar.MINUTE));
+        ca.set(Calendar.SECOND, ca.getActualMinimum(Calendar.SECOND));
+        Date time = ca.getTime();
+        return time;
+    }
+
+    /**
+     * 获取当天的结束时间
+     * @return
+     */
+    public static Date getEndTimeOfToday(){
+        Calendar ca = Calendar.getInstance();
+        ca.set(Calendar.HOUR_OF_DAY, ca.getActualMaximum(Calendar.HOUR_OF_DAY));
+        ca.set(Calendar.MINUTE, ca.getActualMaximum(Calendar.MINUTE));
+        ca.set(Calendar.SECOND, ca.getActualMaximum(Calendar.SECOND));
+        Date time = ca.getTime();
+        return time;
+    }
+
+
+    /**
+     * 获取当月的第一天
+     * @return
+     */
+    public static Date getStartTimeOfMonth(){
+        Calendar ca = Calendar.getInstance();
+        ca.set(Calendar.DAY_OF_MONTH, ca.getActualMinimum(Calendar.DAY_OF_MONTH));
+        ca.set(Calendar.HOUR_OF_DAY, ca.getActualMinimum(Calendar.HOUR_OF_DAY));
+        ca.set(Calendar.MINUTE, ca.getActualMinimum(Calendar.MINUTE));
+        ca.set(Calendar.SECOND, ca.getActualMinimum(Calendar.SECOND));
+        Date time = ca.getTime();
+        return time;
+    }
+
+    /**
+     * 获取当月的最后一天
+     * @return
+     */
+    public static Date getEndTimeOfMonth(){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar ca = Calendar.getInstance();
+        ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
+        ca.set(Calendar.HOUR_OF_DAY, ca.getActualMaximum(Calendar.HOUR_OF_DAY));
+        ca.set(Calendar.MINUTE, ca.getActualMaximum(Calendar.MINUTE));
+        ca.set(Calendar.SECOND, ca.getActualMaximum(Calendar.SECOND));
+        Date time = ca.getTime();
+        return time;
+    }
+
+    /**
+     * 日期运算
+     * @param source
+     * type: Calendar.YEAR Calendar.MONTH Calendar.DAY_OF_YEAR
+     * @return
+     */
+    public static Date arithmetic(Date source,int type,int number){
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.setTime(source);
+        rightNow.add(type,number);
+        Date dt1=rightNow.getTime();
+        return dt1;
+    }
+
+
 }

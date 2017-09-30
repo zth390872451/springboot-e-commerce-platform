@@ -2,7 +2,7 @@ package com.svlada.security.auth.ajax;
 
 import com.svlada.entity.User;
 import com.svlada.security.model.UserContext;
-import com.svlada.user.service.DatabaseUserService;
+import com.svlada.component.service.DatabaseUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -45,7 +45,7 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
 
         User user = userService.getByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-        /*if (!encoder.matches(password, user.getPassword())) {
+        /*if (!encoder.matches(password, component.getPassword())) {
             throw new BadCredentialsException("Authentication Failed. Username or Password not valid.");
         }*/
         if (user==null || !user.getPassword().equals(password)){
