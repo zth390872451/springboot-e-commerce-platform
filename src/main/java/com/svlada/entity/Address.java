@@ -19,7 +19,7 @@ public class Address implements Serializable {
     @JsonIgnore
 	private User user;
 
-	private String name;
+	private String name;//收货人姓名
 	private String province;
 	private String city;
 	private String area;

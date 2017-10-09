@@ -19,14 +19,24 @@ public class MajorImage implements Serializable{
 
     private String imageUrl;
 
+    private Integer showOrder;//图片顺序，0,1，2。。。依次显示
 
 
-    public MajorImage() {
+
+    public MajorImage(MajorImage majorImage) {
     }
 
     public MajorImage(Product product, String imageUrl) {
         this.product = product;
         this.imageUrl = imageUrl;
+    }
+
+    public Integer getShowOrder() {
+        return showOrder;
+    }
+
+    public void setShowOrder(Integer showOrder) {
+        this.showOrder = showOrder;
     }
 
     public Long getId() {

@@ -27,9 +27,9 @@ public class Product implements Serializable {
     private Long goodComment;//好评数量
     private Integer status;//商品状态。0：新增，1：已上架，2：已下架
 
-    public static final Integer status_add = 0;
-    public static final Integer status_up = 1;
-    public static final Integer status_down = 2;
+    public static final Integer STATUS_ADD = 0;
+    public static final Integer STATUS_UP = 1;
+    public static final Integer STATUS_DOWN = 2;
     //商品信息
     @OneToOne
     @JoinColumn(name="category_id")
