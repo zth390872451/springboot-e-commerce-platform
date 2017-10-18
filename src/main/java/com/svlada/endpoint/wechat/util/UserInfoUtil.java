@@ -30,7 +30,7 @@ public class UserInfoUtil {
 
 
     public static void main(String[] args) {
-        String REDIRECT_URI = "http://wechat.tmqyt.com/url";
+        String REDIRECT_URI = "http://www.dsunyun.com/url";
         String SCOPE = "snsapi_login"; // snsapi_userinfo // snsapi_login
 
         //appId

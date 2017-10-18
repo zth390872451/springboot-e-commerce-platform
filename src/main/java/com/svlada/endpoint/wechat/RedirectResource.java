@@ -8,6 +8,7 @@ import com.svlada.endpoint.wechat.util.UserInfoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,8 +17,8 @@ public class RedirectResource {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public static final String WX_APPID = "wx222e322a20897ea3";
-    public static final String WX_APPSECRET = "c9d547819234dd0059bf4b23422409e1";
+    public static final String WX_APPID = "wx6aef1915818229a5";
+    public static final String WX_APPSECRET = "d21e6a1fb34ccb89504d8b9ba934bc24";
 
 
     /**
@@ -29,10 +30,9 @@ public class RedirectResource {
      * @param state 重定向状态参数
      * @return
      */
-    @GetMapping("/redirect")
+    @RequestMapping("/url")
     public String wechatLogin(@RequestParam(name = "code", required = false) String code,
                               @RequestParam(name = "state") String state) {
-
         // 1. 用户同意授权,获取code
         logger.info("收到微信重定向跳转.");
         logger.info("用户同意授权,获取code:{} , state:{}", code, state);
@@ -46,7 +46,7 @@ public class RedirectResource {
             String WebAccessToken = "";
             String openId = "";
             String nickName,sex,openid = "";
-            String REDIRECT_URI = "http://www.xxx.com/url";
+            String REDIRECT_URI = "http://www.dsunyun.com/url";
             String SCOPE = "snsapi_userinfo";
 
             String getCodeUrl = UserInfoUtil.getCode(APPID, REDIRECT_URI, SCOPE);

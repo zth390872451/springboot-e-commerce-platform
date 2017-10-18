@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class WxPubResource {
 
     //此处TOKEN即我们刚刚所填的token
-    private String TOKEN = "good";
+    private String TOKEN = "weixin";
 
     /**
      * 接收并校验四个请求参数
@@ -24,7 +24,7 @@ public class WxPubResource {
      * @param echostr
      * @return echostr
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/wechat", method = RequestMethod.GET)
     public String checkName(@RequestParam(name = "signature") String signature,
                             @RequestParam(name = "timestamp") String timestamp,
                             @RequestParam(name = "nonce") String nonce,
@@ -41,7 +41,7 @@ public class WxPubResource {
             return echostr;
         } else {
             System.out.println("签名校验失败");
-            return "";
+            return "签名校验失败!";
         }
     }
 
