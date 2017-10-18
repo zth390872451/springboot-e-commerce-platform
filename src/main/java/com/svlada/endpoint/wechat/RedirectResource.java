@@ -7,12 +7,13 @@ import com.svlada.endpoint.wechat.util.HttpsUtil;
 import com.svlada.endpoint.wechat.util.UserInfoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 public class RedirectResource {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -30,15 +31,15 @@ public class RedirectResource {
      * @param state 重定向状态参数
      * @return
      */
-    @RequestMapping("/url")
+    @RequestMapping("/")
     public String wechatLogin(@RequestParam(name = "code", required = false) String code,
-                              @RequestParam(name = "state") String state) {
+                              @RequestParam(name = "state",required = false,defaultValue = "STATE") String state) {
         // 1. 用户同意授权,获取code
         logger.info("收到微信重定向跳转.");
         logger.info("用户同意授权,获取code:{} , state:{}", code, state);
 
         // 2. 通过code换取网页授权access_token
-        if (code != null || !(code.equals(""))) {
+        /*if (code != null || !(code.equals(""))) {
 
             String APPID = WX_APPID;
             String SECRET = WX_APPSECRET;
@@ -124,8 +125,8 @@ public class RedirectResource {
                     logger.error("获取Web Access Token失败");
                 }
             }
-        }
-        return "登录成功";
+        }*/
+        return "redirect:index.html";
     }
 
 }
