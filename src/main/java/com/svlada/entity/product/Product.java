@@ -17,15 +17,15 @@ public class Product implements Serializable {
     private Long id;
 
     //商品价格信息
-    private Long price;// 定价
-    private Long nowPrice;// 现价
+    private Long price= 0L;// 定价
+    private Long nowPrice= 0L;// 现价
 //    private Long unit;//商品单位。默认“item:件”
-    private Long hit;// 浏览次数
-    private Long stock;//库存
-    private Long favorite;//收藏数量
-    private Long badComment;//差评数量
-    private Long goodComment;//好评数量
-    private Integer status;//商品状态。0：新增，1：已上架，2：已下架
+    private Long hit= 0L;// 浏览次数
+    private Long stock = 0L;//库存
+    private Long favorite = 0L;//收藏数量
+    private Long badComment= 0L;//差评数量
+    private Long goodComment= 0L;//好评数量
+    private Integer status = 0;//商品状态。0：新增，1：已上架，2：已下架
 
     public static final Integer STATUS_ADD = 0;
     public static final Integer STATUS_UP = 1;
@@ -54,7 +54,7 @@ public class Product implements Serializable {
     //搜索条件
     private Boolean isNew = false;// 是否新品。n：否，true：是新品上市
     private Boolean specialPrice = false;// 是否特价。n：否，true：是促销商品
-    private Long saleCount;//销售数量
+    private Long saleCount = 0L;//销售数量
     private Boolean recommend = false;//true：是推荐商品
     private Boolean mailFree = false;//true:是卖家包邮
 

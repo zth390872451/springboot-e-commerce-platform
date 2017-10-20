@@ -97,10 +97,10 @@ public class ShopCartEndpoint {
         User user = WebUtil.getCurrentUser();
         List<Product> products = shopCartRepository.findAllProductByUserId(user.getId());
 
-        List<CartProductDto> cartProductDtoList = products.stream().map(product -> new CartProductDto(product.getName(), product.getPrice(), product.getNowPrice(), product.getStock(), product.getIntroduce(), product.getMailFree(), majorImageRepository.findFirstImageUrlByProductIdOrderByProductId(product.getId())))
+        List<CartProductDto> cartProductDtoList = products.stream().map(product -> new CartProductDto(product.getName(), product.getPrice(), product.getNowPrice(), product.getStock(), product.getIntroduce(), product.getMailFree(), majorImageRepository.findFirstImageUrlByProductIdOrderByIdAsc(product.getId())))
                 .collect(Collectors.toList());
 //        products.stream().forEach(product -> cartProductDto.setMajorImage(majorImageRepository.findFirstByProductIdOrderById(product.getId()))));
-//        products.stream().forEach(product -> new MajorImage(majorImageRepository.findFirstImageUrlByProductIdOrderByProductId(product.getId())));
+//        products.stream().forEach(product -> new MajorImage(majorImageRepository.findFirstImageUrlByProductIdOrderByIdAsc(product.getId())));
         //组装商品信息
 //        products.stream().map(product -> majorImageRepository.findFirstByProductIdOrderById(product.getId()))
         return success(cartProductDtoList);

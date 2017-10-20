@@ -42,8 +42,8 @@ public class ProductInfoDescDto implements Serializable{
     @ApiModelProperty(notes="商品状态：0：新增，1：已上架，2：已下架")
     private Integer  status;
 
-    @ApiModelProperty(notes="商品所属类别ID")
-    private Long categoryId;//商品类别ID
+   /* @ApiModelProperty(notes="商品所属类别ID")
+    private Long categoryId;//商品类别ID*/
 
     public Integer getStatus() {
         return status;
@@ -85,14 +85,14 @@ public class ProductInfoDescDto implements Serializable{
         this.stock = stock;
     }
 
-    public Long getCategoryId() {
+  /*  public Long getCategoryId() {
         return categoryId;
     }
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
-
+*/
 
     public String getName() {
         return name;

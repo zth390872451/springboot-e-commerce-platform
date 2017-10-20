@@ -30,11 +30,11 @@ public class UserInfoUtil {
 
 
     public static void main(String[] args) {
-        String REDIRECT_URI = "http://www.dsunyun.com/url";
-        String SCOPE = "snsapi_login"; // snsapi_userinfo // snsapi_login
+        String REDIRECT_URI = "http%3A%2F%2Fwww.dsunyun.com";
+        String SCOPE = "snsapi_userinfo"; // snsapi_userinfo // snsapi_login
 
         //appId
-        String appId = "wx222e322a20897ea3";
+        String appId = "wx6aef1915818229a5";
 
         String getCodeUrl = getCode(appId, REDIRECT_URI, SCOPE);
         System.out.println("getCodeUrl:"+getCodeUrl);

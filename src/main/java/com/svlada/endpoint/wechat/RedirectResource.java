@@ -3,15 +3,17 @@ package com.svlada.endpoint.wechat;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.svlada.common.utils.ApplicationSupport;
+import com.svlada.component.repository.UserRepository;
 import com.svlada.endpoint.wechat.util.HttpsUtil;
 import com.svlada.endpoint.wechat.util.UserInfoUtil;
+import com.svlada.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class RedirectResource {
@@ -32,22 +34,26 @@ public class RedirectResource {
      * @return
      */
     @RequestMapping("/")
-    public String wechatLogin(@RequestParam(name = "code", required = false) String code,
-                              @RequestParam(name = "state",required = false,defaultValue = "STATE") String state) {
+    public String wechatLogin(@RequestHeader(name = "accessToken", required = false) String accessToken,
+                              @RequestParam(name = "code", required = false) String code,
+                              @RequestParam(name = "state",required = false,defaultValue = "STATE") String state
+                            ,RedirectAttributes attributes) {
+        if (StringUtils.isEmpty(code)){//用户尚未授权
+            logger.info("用户尚未授权,准备进入提示授权页面.");
+        }
         // 1. 用户同意授权,获取code
         logger.info("收到微信重定向跳转.");
         logger.info("用户同意授权,获取code:{} , state:{}", code, state);
 
         // 2. 通过code换取网页授权access_token
-        /*if (code != null || !(code.equals(""))) {
-
+        if (!StringUtils.isEmpty(code)) {
             String APPID = WX_APPID;
             String SECRET = WX_APPSECRET;
             String CODE = code;
             String WebAccessToken = "";
             String openId = "";
             String nickName,sex,openid = "";
-            String REDIRECT_URI = "http://www.dsunyun.com/url";
+            String REDIRECT_URI = "http://www.dsunyun.com";
             String SCOPE = "snsapi_userinfo";
 
             String getCodeUrl = UserInfoUtil.getCode(APPID, REDIRECT_URI, SCOPE);
@@ -62,23 +68,12 @@ public class RedirectResource {
 
             JSONObject jsonObject = JSON.parseObject(response);
             logger.info("请求到的Access Token:{}", jsonObject.toJSONString());
-
-//            {
-//                "access_token":"ACCESS_TOKEN",
-//                "expires_in":7200,
-//                "refresh_token":"REFRESH_TOKEN",
-//                "openid":"OPENID",
-//                "scope":"SCOPE",
-//                "unionid": "o6_bmasdasdsad6_2sgVt7hMZOPfL"
-//            }
-
             if (null != jsonObject) {
                 try {
                     WebAccessToken = jsonObject.getString("access_token");
                     openId = jsonObject.getString("openid");
                     logger.info("获取access_token成功!");
                     logger.info("WebAccessToken:{} , openId:{}", WebAccessToken, openId);
-
                     // 3. 使用获取到的 Access_token 和 openid 拉取用户信息
                     String userMessageUrl = UserInfoUtil.getUserMessage(WebAccessToken, openId);
                     logger.info("第三步:获取用户信息的URL:{}", userMessageUrl);
@@ -87,23 +82,7 @@ public class RedirectResource {
                     String userMessageResponse = HttpsUtil.httpsRequestToString(userMessageUrl, "GET", null);
 
                     JSONObject userMessageJsonObject = JSON.parseObject(userMessageResponse);
-
                     logger.info("用户信息:{}", userMessageJsonObject.toJSONString());
-//                    {
-//                        "openid":" OPENID",
-//                        "nickname": NICKNAME,
-//                        "sex":"1",
-//                        "province":"PROVINCE"
-//                        "city":"CITY",
-//                        "country":"COUNTRY",
-//                        "headimgurl":    "http://wx.qlogo.cn/mmopen/g3MoCfHe/46",
-//                        "privilege":[
-//                              "PRIVILEGE1"
-//                              "PRIVILEGE2"
-//                        ],
-//                        "unionid": "o6_bmasdasdsad6_2sgVt7hMZOPfL"
-//                    }
-
                     if (userMessageJsonObject != null) {
                         try {
                             //用户昵称
@@ -117,16 +96,35 @@ public class RedirectResource {
                             logger.info("用户昵称:{}", nickName);
                             logger.info("用户性别:{}", sex);
                             logger.info("OpenId:{}", openid);
+
+                            UserRepository userRepository = (UserRepository) ApplicationSupport.getBean(UserRepository.class);
+                            User user = userRepository.findOneByOpenId(openId);
+                            if (user==null){
+                                user = new User();
+                            }
+                            user.setOpenId(openId);
+                            user.setNickName(nickName);
+                            user.setSex(sex);
+                            userRepository.save(user);
+
                         } catch (JSONException e) {
-                            logger.error("获取用户信息失败");
+                            logger.error("获取用户信息失败 failed");
+                            return "failed!";
                         }
                     }
                 } catch (JSONException e) {
                     logger.error("获取Web Access Token失败");
+                    return "failed!";
                 }
             }
-        }*/
-        return "redirect:index.html";
+            logger.info("授权成功!");
+            attributes.addAttribute("openId", openId);
+            attributes.addAttribute("access_token", WebAccessToken);
+            return "redirect:http://www.dsunyun.com:81";
+        }
+        logger.info("尚未授权,即将调到微信的授权页面");
+        return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6aef1915818229a5&redirect_uri=http%3A%2F%2Fwww.dsunyun.com&response_type=code&scope=snsapi_userinfo&#wechat_redirect";
     }
+
 
 }

@@ -32,8 +32,7 @@ public class User {
     @JoinColumn(name="APP_USER_ID", referencedColumnName="ID")
     private List<UserRole> roles;
 
-
-
+    private String openId;
 
     private String nickName;
 //    private String accountType;//会员类型，qq,sinawb,alipay
@@ -65,7 +64,13 @@ public class User {
         this.roles = roles;
     }
 
+    public String getOpenId() {
+        return openId;
+    }
 
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
 
     public void setId(Long id) {
         this.id = id;
