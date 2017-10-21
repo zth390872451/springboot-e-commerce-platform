@@ -5,8 +5,11 @@ import com.svlada.component.repository.OrderItemRepository;
 import com.svlada.component.repository.OrderRepository;
 import com.svlada.component.repository.ProductRepository;
 import com.svlada.component.repository.UserRepository;
+import com.svlada.endpoint.dto.ProductInfoDescDto;
+import com.svlada.endpoint.dto.builder.ProductInfoBuilder;
 import com.svlada.entity.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -73,9 +76,16 @@ public class ReportService {
      * 5、商品浏览数量 pageable=(sort=hit,DESC)
      * @return
      */
-    public List<Product> getProduct(Pageable pageable){
+    public List<ProductInfoDescDto> getProductInfoDescDto(Pageable pageable){
         Page<Product> productPage = productRepository.findAll(pageable);
-        List<Product> content = productPage.getContent();
+        Page<ProductInfoDescDto> dtoPage = productPage.map(new Converter<Product, ProductInfoDescDto>() {
+            @Override
+            public ProductInfoDescDto convert(Product entity) {
+                ProductInfoDescDto dto = ProductInfoBuilder.builderProductInfoDescDto(entity);
+                return dto;
+            }
+        });
+        List<ProductInfoDescDto> content = dtoPage.getContent();
         return content;
     }
 

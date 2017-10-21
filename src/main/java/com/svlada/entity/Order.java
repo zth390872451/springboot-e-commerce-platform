@@ -2,6 +2,7 @@ package com.svlada.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,8 +23,37 @@ public class Order implements Serializable {
     @JoinColumn(name="user_id")//这里设置JoinColum设置了外键的名字，并且Order是关系维护端
     private User user;
 
+    //订单号,唯一
+    private String orderCode;
+    //微信订单号，唯一
+    private String wechatCode;
 
 
+    private Date createDate = new Date();
+
+    public String getOrderCode() {
+        return orderCode;
+    }
+
+    public String getWechatCode() {
+        return wechatCode;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
+    }
+
+    public void setWechatCode(String wechatCode) {
+        this.wechatCode = wechatCode;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 
     public Set<OrderItem> getItems() {
         return items;

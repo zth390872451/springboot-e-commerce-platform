@@ -12,8 +12,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u left join fetch u.roles r where u.username=:username")
     Optional<User> findByUsername(@Param("username") String username);
 
-    @Query(value = "select count(1) from User u  where u.lastLoginDate between 1? and 2?",nativeQuery = true)
-    Long countByLastLoginDateDateBetween(Date startDate, Date endDate);
+    @Query(value = "select count(1) from User u  where u.lastLoginDate between :startDate and :endDate")
+    Long countByLastLoginDateDateBetween(@Param("startDate") Date startDate,@Param("endDate")  Date endDate);
 
     User findOneByOpenId(String openId);
 }

@@ -7,6 +7,9 @@
 	<body>
 	</body>
 	<script type="text/javascript">
-		window.open("http://www.dsunyun.com:81", '_self')
+	    var wxApi = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6aef1915818229a5&redirect_uri=http%3A%2F%2Fwww.dsunyun.com&response_type=code&scope=snsapi_userinfo&#wechat_redirect';
+	    var thisUrl = window.location.href;
+	    var result = thisUrl.indexOf('open.weixin.qq.com');
+	    window.open("http://www.dsunyun.com:81", '_self');
 	</script>
 </html>

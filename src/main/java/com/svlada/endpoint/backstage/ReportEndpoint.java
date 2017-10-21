@@ -2,8 +2,10 @@ package com.svlada.endpoint.backstage;
 
 import com.svlada.common.request.CustomResponse;
 import com.svlada.component.service.ReportService;
+import com.svlada.endpoint.dto.ProductInfoDescDto;
 import com.svlada.entity.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -19,7 +21,7 @@ import static com.svlada.component.service.ReportService.CURRENT_MONTH;
 import static com.svlada.component.service.ReportService.RECENT_MONTH;
 
 @RestController
-@RequestMapping("/api/back/report2")
+@RequestMapping("/api/back/report")
 public class ReportEndpoint {
 
     @Autowired
@@ -50,7 +52,33 @@ public class ReportEndpoint {
     @GetMapping("/product")
     public CustomResponse getProduct(@PageableDefault(value = 10, sort = {"saleCount"}, direction = Sort.Direction.DESC)
                                                  Pageable pageable){
-        List<Product> result = reportService.getProduct(pageable);
+        Map<String,Object> result = new HashMap<>();
+        PageRequest pageRequest = null;
+
+        pageRequest = new PageRequest(0,10,Sort.Direction.DESC,"saleCount");
+        List<ProductInfoDescDto> saleCountProduct = reportService.getProductInfoDescDto(pageRequest);
+
+        pageRequest = new PageRequest(0,10,Sort.Direction.DESC,"stock");
+        List<ProductInfoDescDto> stockProduct = reportService.getProductInfoDescDto(pageRequest);
+
+        pageRequest = new PageRequest(0,10,Sort.Direction.DESC,"favorite");
+        List<ProductInfoDescDto> favoriteProduct = reportService.getProductInfoDescDto(pageRequest);
+
+        pageRequest = new PageRequest(0,10,Sort.Direction.DESC,"badComment");
+        List<ProductInfoDescDto> badCommentProduct = reportService.getProductInfoDescDto(pageRequest);
+
+        pageRequest = new PageRequest(0,10,Sort.Direction.DESC,"goodComment");
+        List<ProductInfoDescDto> goodCommentProduct = reportService.getProductInfoDescDto(pageRequest);
+
+        pageRequest = new PageRequest(0,10,Sort.Direction.DESC,"hit");
+        List<ProductInfoDescDto> hitProduct = reportService.getProductInfoDescDto(pageRequest);
+
+        result.put("saleCount",saleCountProduct);
+        result.put("stock",stockProduct);
+        result.put("favorite",favoriteProduct);
+        result.put("badComment",badCommentProduct);
+        result.put("goodComment",goodCommentProduct);
+        result.put("hit",hitProduct);
         return success(result);
     }
 
