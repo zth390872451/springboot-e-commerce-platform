@@ -3,16 +3,18 @@ package com.svlada.endpoint.font;
 import com.svlada.common.WebUtil;
 import com.svlada.common.request.CustomResponse;
 import com.svlada.common.request.CustomResponseStatus;
+import com.svlada.component.repository.AddressRepository;
+import com.svlada.component.service.AddressService;
 import com.svlada.endpoint.dto.AddressDto;
 import com.svlada.entity.Address;
 import com.svlada.entity.User;
-import com.svlada.component.repository.AddressRepository;
-import com.svlada.component.service.AddressService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.svlada.common.request.CustomResponseBuilder.fail;
 import static com.svlada.common.request.CustomResponseBuilder.success;
@@ -27,7 +29,7 @@ public class AddressEndpoint {
     private AddressService addressService;
 
     @ApiOperation(value = "添加收货地址", notes = "")
-    @ApiImplicitParam(name = "dto", value = "活动信息", paramType = "body", required = true, dataType = "AddressDto")
+    @ApiImplicitParam(name = "dto", value = "地址信息", paramType = "body", required = true, dataType = "AddressDto")
     @PostMapping("/add")
     public CustomResponse add(@RequestBody AddressDto dto) {
         User user = WebUtil.getCurrentUser();
@@ -151,8 +153,8 @@ public class AddressEndpoint {
     @GetMapping("/list")
     public CustomResponse list() {
         User user = WebUtil.getCurrentUser();
-        Address address = addressRepository.findAllByUserId(user.getId());
-        return success(address);
+        List<Address> addresses= addressRepository.findAllByUserId(user.getId());
+        return success(addresses);
     }
 
 }

@@ -28,8 +28,27 @@ public class Order implements Serializable {
     //微信订单号，唯一
     private String wechatCode;
 
+    private Integer payStatus;//订单的支付状态 0：尚未支付 1：支付成功 2:支付失败 3:订单支付超时(失效)
+
+    private Long orderTotal;//订单的总金额 = 订单项的总金额(商品费用+快递费用)
 
     private Date createDate = new Date();
+
+    public Long getOrderTotal() {
+        return orderTotal;
+    }
+
+    public void setOrderTotal(Long orderTotal) {
+        this.orderTotal = orderTotal;
+    }
+
+    public Integer getPayStatus() {
+        return payStatus;
+    }
+
+    public void setPayStatus(Integer payStatus) {
+        this.payStatus = payStatus;
+    }
 
     public String getOrderCode() {
         return orderCode;
