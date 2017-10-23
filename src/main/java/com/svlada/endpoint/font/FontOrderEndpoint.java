@@ -11,7 +11,7 @@ import static com.svlada.common.request.CustomResponseBuilder.success;
 
 @RestController
 @RequestMapping("/api/font/order")
-public class OrderEndpoint {
+public class FontOrderEndpoint {
 
     @Autowired
     private OrderRepository orderRepository;

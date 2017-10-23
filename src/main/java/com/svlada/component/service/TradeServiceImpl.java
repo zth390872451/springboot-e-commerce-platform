@@ -1,6 +1,5 @@
 package com.svlada.component.service;
 
-import com.svlada.component.service.define.TradeService;
 import com.svlada.endpoint.dto.TradeDTO;
 import com.svlada.entity.WxpayNotify;
 import org.springframework.stereotype.Service;

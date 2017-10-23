@@ -19,6 +19,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
@@ -53,8 +54,9 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
             }
             throw new AuthMethodNotSupportedException("Authentication method not supported");
         }
-
-        LoginRequest loginRequest = objectMapper.readValue(request.getReader(), LoginRequest.class);
+        String bodyString = getBodyString(request.getReader());
+        LoginRequest loginRequest = objectMapper.readValue(bodyString, LoginRequest.class);
+//        LoginRequest loginRequest = objectMapper.readValue(request.(), LoginRequest.class);
 
         /*if (StringUtils.isBlank(loginRequest.getUsername()) || StringUtils.isBlank(loginRequest.getPassword())) {
             throw new AuthenticationServiceException("Username or Password not provided");
@@ -70,7 +72,21 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
         return this.getAuthenticationManager().authenticate(token);
     }
 
-    @Override
+    public static String getBodyString(BufferedReader br) {
+        String inputLine;
+        String str = "";
+        try {
+            while ((inputLine = br.readLine()) != null) {
+                str += inputLine;
+            }
+            br.close();
+        } catch (IOException e) {
+            System.out.println("IOException: " + e);
+        }
+        return str;
+    }
+
+        @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
         successHandler.onAuthenticationSuccess(request, response, authResult);

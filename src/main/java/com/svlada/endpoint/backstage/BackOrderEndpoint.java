@@ -13,7 +13,7 @@ import static com.svlada.common.request.CustomResponseBuilder.success;
 
 @RestController
 @RequestMapping("/api/back/order")
-public class OrderEndpoint {
+public class BackOrderEndpoint {
 
     @Autowired
     private OrderRepository orderRepository;
