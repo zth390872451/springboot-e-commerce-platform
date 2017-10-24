@@ -26,7 +26,7 @@ public class OrderItem implements Serializable {
 	private String unitPrice;//单价
 	private Integer number;//购买数量
 	private Long fee;// 配送费
-    private Long totalMoney;// 小计
+    private Long itemTotalMoney;// 小计
     private Integer stockStatus;// n:库存不足；y:库存充足。默认n
 
 //	private Long isComment;//评论ID
@@ -83,12 +83,12 @@ public class OrderItem implements Serializable {
         this.fee = fee;
     }
 
-    public Long getTotalMoney() {
-        return totalMoney;
+    public Long getItemTotalMoney() {
+        return itemTotalMoney;
     }
 
-    public void setTotalMoney(Long totalMoney) {
-        this.totalMoney = totalMoney;
+    public void setItemTotalMoney(Long itemTotalMoney) {
+        this.itemTotalMoney = itemTotalMoney;
     }
 
     public Order getOrder() {

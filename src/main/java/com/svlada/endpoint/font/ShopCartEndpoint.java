@@ -38,7 +38,7 @@ public class ShopCartEndpoint {
     /**
      * 添加到购物车，修改购物车
      */
-    @PutMapping(value = "/add")
+    @PutMapping(value = "/set")
     public CustomResponse add(@RequestBody ShopCartDto dto) {
         Product product = productRepository.getOne(dto.getProductId());
         if (StringUtils.isEmpty(product)) {
@@ -69,21 +69,9 @@ public class ShopCartEndpoint {
      * @return
      */
     @DeleteMapping("/remove")
-    public CustomResponse removeProduct(@PathVariable("productId") Long[] productIds) {
+    public CustomResponse removeProduct(@RequestParam(name = "productIds") Long[] productIds) {
         User user = WebUtil.getCurrentUser();
-        shopCartRepository.deleteOneByUserIdAndProductIds(user.getId(), productIds);
-        return success();
-    }
-
-    /**
-     * 清空购物车
-     *
-     * @return
-     */
-    @DeleteMapping(value = "/clear")
-    public CustomResponse clearShopCart() {
-        User user = WebUtil.getCurrentUser();
-        shopCartRepository.deleteAllByUserId(user.getId());
+        shopCartRepository.deleteAllByUserIdAndProductIdIn(user.getId(), productIds);
         return success();
     }
 
