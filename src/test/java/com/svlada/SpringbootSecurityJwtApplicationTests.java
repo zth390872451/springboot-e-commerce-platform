@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 //@SpringBootTest
 public class SpringbootSecurityJwtApplicationTests {
 
-	@Test
+
 	public void contextLoads() {
 
 	}

@@ -28,7 +28,7 @@ public class Address implements Serializable {
 	private String zip;
 	private String phone;
 	private String mobile;
-	private Boolean isDefault;
+	private Boolean isDefault = false;
 
 	public Long getId() {
 		return id;

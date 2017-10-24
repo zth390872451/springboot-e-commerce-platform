@@ -138,8 +138,6 @@ public class AddressEndpoint {
     }
 
 
-
-
     @ApiOperation(value = "获取收货地址详情", notes = "")
     @ApiImplicitParam(name = "id", value = "地址记录ID", paramType = "path", required = true, dataType = "Long")
     @GetMapping("/get/{id}")

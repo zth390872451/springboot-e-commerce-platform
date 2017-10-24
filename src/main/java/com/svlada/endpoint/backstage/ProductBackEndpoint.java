@@ -137,7 +137,7 @@ public class ProductBackEndpoint {
     @PostMapping(value = "/set/basic")
     public CustomResponse setBasic(@RequestBody @Valid ProductInfoDescDto dto) {
         Product product = null;
-        if (!StringUtils.isEmpty(dto.getCode())){//新建商品记录
+        if (StringUtils.isEmpty(dto.getCode())){//新建商品记录
             product = new Product();
             //生成商品编号
             if (!StringUtils.isEmpty(dto.getName())){

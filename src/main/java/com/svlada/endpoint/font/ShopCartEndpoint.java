@@ -7,8 +7,8 @@ import com.svlada.component.repository.MajorImageRepository;
 import com.svlada.component.repository.OrderRepository;
 import com.svlada.component.repository.ProductRepository;
 import com.svlada.component.repository.ShopCartRepository;
-import com.svlada.endpoint.dto.CartProductDto;
 import com.svlada.endpoint.dto.ShopCartDto;
+import com.svlada.endpoint.dto.builder.ShopCartBuilder;
 import com.svlada.entity.ShopCart;
 import com.svlada.entity.User;
 import com.svlada.entity.product.Product;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.svlada.common.request.CustomResponseBuilder.fail;
 import static com.svlada.common.request.CustomResponseBuilder.success;
@@ -33,11 +32,13 @@ public class ShopCartEndpoint {
     private ShopCartRepository shopCartRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private MajorImageRepository majorImageRepository;
 
     /**
-     * 添加到购物车
+     * 添加到购物车，修改购物车
      */
-    @PostMapping(value = "/add")
+    @PutMapping(value = "/add")
     public CustomResponse add(@RequestBody ShopCartDto dto) {
         Product product = productRepository.getOne(dto.getProductId());
         if (StringUtils.isEmpty(product)) {
@@ -54,8 +55,8 @@ public class ShopCartEndpoint {
             shopCart.setProductId(dto.getProductId());
             shopCart.setCreateDate(new Date());
             shopCart.setNumber(dto.getNumber());
-        }else {//购物车中已经有该商品，则添加数量
-            shopCart.setNumber(shopCart.getNumber()+dto.getNumber());
+        } else {//购物车中已经有该商品，则添加数量
+            shopCart.setNumber(shopCart.getNumber() + dto.getNumber());
         }
         shopCartRepository.save(shopCart);
         return success();
@@ -64,46 +65,47 @@ public class ShopCartEndpoint {
     /**
      * 删除购物车的某些商品
      *
-     * @param productId
+     * @param productIds
      * @return
      */
-    @GetMapping("/remove/{productId}")
-    public CustomResponse removeProduct(@PathVariable("productId") Long productId) {
+    @DeleteMapping("/remove")
+    public CustomResponse removeProduct(@PathVariable("productId") Long[] productIds) {
         User user = WebUtil.getCurrentUser();
-        shopCartRepository.deleteOneByUserIdAndProductId(user.getId(), productId);
+        shopCartRepository.deleteOneByUserIdAndProductIds(user.getId(), productIds);
         return success();
     }
 
     /**
      * 清空购物车
+     *
      * @return
      */
-    @PutMapping(value = "/clear")
+    @DeleteMapping(value = "/clear")
     public CustomResponse clearShopCart() {
         User user = WebUtil.getCurrentUser();
         shopCartRepository.deleteAllByUserId(user.getId());
         return success();
     }
 
-    @Autowired
-    private MajorImageRepository majorImageRepository;
-
     /**
-     * 获取用户的购物车中的商品信息:商品名称，现价，数量，是否包邮，首页图片，库存，
+     * 获取用户的购物车中的商品信息:商品名称，现价，数量，是否包邮，首页图片，库存 用户选择的数量
+     *
      * @return
      */
-    @PutMapping(value = "/product")
-    public CustomResponse product() {
+    @GetMapping(value = "/list")
+    public CustomResponse list() {
         User user = WebUtil.getCurrentUser();
-        List<Product> products = shopCartRepository.findAllProductByUserId(user.getId());
-
+        List<ShopCart> shopCarts = shopCartRepository.findAllByUserId(user.getId());
+        List<ShopCartDto> shopCartDtos = ShopCartBuilder.buildShopCartDtos(shopCarts);
+        return success(shopCartDtos);
+        /*List<Product> products = shopCartRepository.findAllProductByUserId(user.getId());
         List<CartProductDto> cartProductDtoList = products.stream().map(product -> new CartProductDto(product.getName(), product.getPrice(), product.getNowPrice(), product.getStock(), product.getIntroduce(), product.getMailFree(), majorImageRepository.findFirstImageUrlByProductIdOrderByIdAsc(product.getId())))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
 //        products.stream().forEach(product -> cartProductDto.setMajorImage(majorImageRepository.findFirstByProductIdOrderById(product.getId()))));
 //        products.stream().forEach(product -> new MajorImage(majorImageRepository.findFirstImageUrlByProductIdOrderByIdAsc(product.getId())));
         //组装商品信息
 //        products.stream().map(product -> majorImageRepository.findFirstByProductIdOrderById(product.getId()))
-        return success(cartProductDtoList);
+//        return success(cartProductDtoList);
     }
 
 }

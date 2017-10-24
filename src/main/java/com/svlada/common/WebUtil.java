@@ -1,9 +1,18 @@
 package com.svlada.common;
 
+import com.svlada.common.utils.ApplicationSupport;
+import com.svlada.component.repository.UserRepository;
 import com.svlada.entity.User;
+import com.svlada.security.model.UserContext;
+import com.svlada.security.model.token.JwtToken;
+import com.svlada.security.model.token.JwtTokenFactory;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -46,4 +55,17 @@ public class WebUtil {
         return user;
     }
 
+
+    public static String createTokenByOpenId(String openId){
+        UserRepository userRepository = ApplicationSupport.getBean(UserRepository.class);
+        JwtTokenFactory jwtTokenFactory = ApplicationSupport.getBean(JwtTokenFactory.class);
+        User user = userRepository.findOneByOpenId(openId);
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.getRole().authority()))
+                .collect(Collectors.toList());
+        UserContext userContext = UserContext.create(user.getUsername(), authorities);
+        JwtToken jwtToken = jwtTokenFactory.createAccessJwtToken(userContext);
+        String token = jwtToken.getToken();
+        return token;
+    }
 }

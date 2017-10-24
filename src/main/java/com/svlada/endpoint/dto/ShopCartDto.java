@@ -9,6 +9,25 @@ public class ShopCartDto implements Serializable{
 
    private Long number;//商品数量
 
+   private String name;//商品名称
+
+    private Long nowPrice;//现价
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getNowPrice() {
+        return nowPrice;
+    }
+
+    public void setNowPrice(Long nowPrice) {
+        this.nowPrice = nowPrice;
+    }
 
     public Long getProductId() {
         return productId;

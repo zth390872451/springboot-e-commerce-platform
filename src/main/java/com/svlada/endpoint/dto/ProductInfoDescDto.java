@@ -15,7 +15,6 @@ public class ProductInfoDescDto implements Serializable{
     private String name;// 商品名称
 
     @ApiModelProperty(notes="商品的唯一编号")
-    @NotNull(message = "不能为空")
     private String code;// 商品编号
 
     @ApiModelProperty(notes="商品页面标题")

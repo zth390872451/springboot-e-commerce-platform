@@ -3,17 +3,28 @@ package com.svlada.endpoint.wechat;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.svlada.common.WebUtil;
 import com.svlada.common.utils.ApplicationSupport;
 import com.svlada.component.repository.UserRepository;
 import com.svlada.endpoint.wechat.util.HttpsUtil;
 import com.svlada.endpoint.wechat.util.UserInfoUtil;
 import com.svlada.entity.User;
+import com.svlada.security.model.UserContext;
+import com.svlada.security.model.token.JwtToken;
+import com.svlada.security.model.token.JwtTokenFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class RedirectResource {
@@ -23,6 +34,10 @@ public class RedirectResource {
     public static final String WX_APPID = "wx6aef1915818229a5";
     public static final String WX_APPSECRET = "d21e6a1fb34ccb89504d8b9ba934bc24";
 
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private JwtTokenFactory jwtTokenFactory;
 
     /**
      * 微信网页授权流程:
@@ -41,6 +56,7 @@ public class RedirectResource {
         if (StringUtils.isEmpty(code)){//用户尚未授权
             logger.info("用户尚未授权,准备进入提示授权页面.");
         }
+
         // 1. 用户同意授权,获取code
         logger.info("收到微信重定向跳转.");
         logger.info("用户同意授权,获取code:{} , state:{}", code, state);
@@ -120,10 +136,19 @@ public class RedirectResource {
             logger.info("授权成功!");
             attributes.addAttribute("openId", openId);
             attributes.addAttribute("access_token", WebAccessToken);
-            return "redirect:http://www.dsunyun.com:81";
+            String jwtToken = WebUtil.createTokenByOpenId(openId);
+            return "redirect:http://www.dsunyun.com:81?openId="+openId+"&access_token="+WebAccessToken+"&jwtToken="+jwtToken;
         }
         logger.info("尚未授权,即将调到微信的授权页面");
         return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6aef1915818229a5&redirect_uri=http%3A%2F%2Fwww.dsunyun.com&response_type=code&scope=snsapi_userinfo&#wechat_redirect";
+    }
+
+
+    @RequestMapping("/test")
+    public String test(@RequestParam(name = "openId", required = false) String openId
+            ,RedirectAttributes attributes) {
+        String token = WebUtil.createTokenByOpenId(openId);
+        return "redirect:index.html?token="+token;
     }
 
 
