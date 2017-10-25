@@ -43,6 +43,7 @@ public class User {
     private String province;
     private String city;
     private String address;
+    private String headImgUrl;
     private String mobile;//手机号码
     private String email;//邮箱
 
@@ -55,6 +56,8 @@ public class User {
     private Date registerDate;
     private Date lastLoginDate;
 
+    private String jwtToken;
+
     public User() { }
 
     public User(Long id, String username, String password, List<UserRole> roles) {
@@ -62,6 +65,22 @@ public class User {
         this.username = username;
         this.password = password;
         this.roles = roles;
+    }
+
+    public String getJwtToken() {
+        return jwtToken;
+    }
+
+    public void setJwtToken(String jwtToken) {
+        this.jwtToken = jwtToken;
+    }
+
+    public String getHeadImgUrl() {
+        return headImgUrl;
+    }
+
+    public void setHeadImgUrl(String headImgUrl) {
+        this.headImgUrl = headImgUrl;
     }
 
     public String getOpenId() {

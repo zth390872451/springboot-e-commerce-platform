@@ -21,7 +21,7 @@ public class OrderUtil {
      */  
     private static int maxPerMSECSize=1000;  
     
-    public static String genOrderNum() {  
+    public static String genOrderCode() {
     	// 最终生成的订单号  
         String finOrderNum = "";  
         try {  

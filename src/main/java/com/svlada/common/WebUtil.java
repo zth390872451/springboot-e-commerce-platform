@@ -66,6 +66,8 @@ public class WebUtil {
         UserContext userContext = UserContext.create(user.getUsername(), authorities);
         JwtToken jwtToken = jwtTokenFactory.createAccessJwtToken(userContext);
         String token = jwtToken.getToken();
+        user.setJwtToken(token);
+        userRepository.save(user);
         return token;
     }
 }

@@ -34,7 +34,7 @@ public class ProductService {
 
     public void setPicService(@RequestParam(value = "majorImageFiles", required = false) MultipartFile[] majorImageFiles, @RequestParam(value = "detailImageFiles", required = false) MultipartFile[] detailImageFiles, User user, Product product) {
         String uuid = UUID.randomUUID().toString();
-        String path = product.getId() + File.separator+ product.getName() + File.separator+ uuid + File.separator;
+        String path = /*product.getName() + File.separator+*/ uuid + File.separator;
         if (!StringUtils.isEmpty(majorImageFiles)){
             majorImageRepository.deleteAllByProductId(product.getId());
             List<String> filePaths = FileUploadUtils.saveCommonFile(majorImageFiles, path);

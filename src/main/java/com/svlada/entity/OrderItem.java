@@ -23,7 +23,8 @@ public class OrderItem implements Serializable {
     @JoinColumn(name="product_id")//这里设置JoinColum设置了外键的名字，并且orderItem是关系维护端
 	private Product product;
 
-	private String unitPrice;//单价
+    private String name;
+	private Long  unitPrice;//单价
 	private Integer number;//购买数量
 	private Long fee;// 配送费
     private Long itemTotalMoney;// 小计
@@ -59,11 +60,19 @@ public class OrderItem implements Serializable {
         this.id = id;
     }
 
-    public String getUnitPrice() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(String unitPrice) {
+    public void setUnitPrice(Long unitPrice) {
         this.unitPrice = unitPrice;
     }
 

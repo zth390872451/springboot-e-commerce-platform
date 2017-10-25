@@ -40,7 +40,9 @@ public class FileUploadUtils {
                 String fileName = file.getName() + getFileSuffix(file.getOriginalFilename());
                 File target = new File(dir, originalFilename);
                 file.transferTo(target);
-                filePaths.add(target.getAbsolutePath());
+                String absolutePath = target.getAbsolutePath();
+                String relativePath = absolutePath.replace(tomcatPath, "");
+                filePaths.add(relativePath);
             }
             return filePaths;
         } catch (Exception e) {

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.svlada.common.WebUtil;
+import com.svlada.common.request.CustomResponse;
 import com.svlada.common.utils.ApplicationSupport;
 import com.svlada.component.repository.UserRepository;
 import com.svlada.endpoint.wechat.util.HttpsUtil;
@@ -23,8 +24,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.svlada.common.request.CustomResponseBuilder.success;
 
 @Controller
 public class RedirectResource {
@@ -108,6 +113,9 @@ public class RedirectResource {
                             sex = (sex.equals("1")) ? "男" : "女";
                             //用户唯一标识
                             openid = userMessageJsonObject.getString("openid");
+                            String headImgUrl = userMessageJsonObject.getString("headimgurl");
+                            String province = userMessageJsonObject.getString("province");
+                            String city = userMessageJsonObject.getString("city");
 
                             logger.info("用户昵称:{}", nickName);
                             logger.info("用户性别:{}", sex);
@@ -121,6 +129,8 @@ public class RedirectResource {
                             user.setOpenId(openId);
                             user.setNickName(nickName);
                             user.setSex(sex);
+                            user.setProvince(province);
+                            user.setCity(city);
                             userRepository.save(user);
 
                         } catch (JSONException e) {
@@ -134,8 +144,6 @@ public class RedirectResource {
                 }
             }
             logger.info("授权成功!");
-            attributes.addAttribute("openId", openId);
-            attributes.addAttribute("access_token", WebAccessToken);
             String jwtToken = WebUtil.createTokenByOpenId(openId);
             return "redirect:http://www.dsunyun.com:81?openId="+openId+"&access_token="+WebAccessToken+"&jwtToken="+jwtToken;
         }
@@ -143,6 +151,14 @@ public class RedirectResource {
         return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6aef1915818229a5&redirect_uri=http%3A%2F%2Fwww.dsunyun.com&response_type=code&scope=snsapi_userinfo&#wechat_redirect";
     }
 
+    @RequestMapping("/get/token")
+    @ResponseBody
+    public CustomResponse getJwtToken(@RequestParam(name = "openId", required = false) String openId) {
+        User user = userRepository.findOneByOpenId(openId);
+        Map<String,Object> result = new HashMap<>();
+        result.put("jwtToken",user.getJwtToken());
+        return success(result);
+    }
 
     @RequestMapping("/test")
     public String test(@RequestParam(name = "openId", required = false) String openId
