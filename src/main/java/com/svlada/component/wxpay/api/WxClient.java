@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.Random;
 import java.util.SortedMap;
 
 public class WxClient {

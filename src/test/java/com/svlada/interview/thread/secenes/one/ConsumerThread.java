@@ -20,7 +20,7 @@ public class ConsumerThread extends Thread{
                         linkedList.wait();
                     }
                     String pop = linkedList.pop();//出队
-                    System.out.println("linkedList 出队元素：= " + pop+",linkedList 内元素的数量："+linkedList.size());
+                    System.out.println(this.getName()+"linkedList 出队元素：= " + pop+",linkedList 内元素的数量："+linkedList.size());
                     linkedList.notify();
                     Thread.sleep(1000);
                 }catch (InterruptedException e){

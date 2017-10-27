@@ -1,16 +1,18 @@
 package com.svlada.endpoint.dto;
 
 
+import java.util.Map;
+
 public class TradeDTO {
     
     private String outTradeNo;
     
-    private Object orderInfo;
+    private Map<String,Object> orderInfo;
     
     
     public TradeDTO(){}
 
-    public TradeDTO(String outTradeNo, Object orderInfo) {
+    public TradeDTO(String outTradeNo, Map<String,Object> orderInfo) {
         this.outTradeNo = outTradeNo;
         this.orderInfo = orderInfo;
     }
@@ -24,13 +26,11 @@ public class TradeDTO {
         this.outTradeNo = outTradeNo;
     }
 
-	public Object getOrderInfo() {
-		return orderInfo;
-	}
+    public Map<String, Object> getOrderInfo() {
+        return orderInfo;
+    }
 
-	public void setOrderInfo(Object orderInfo) {
-		this.orderInfo = orderInfo;
-	}
-
-    
+    public void setOrderInfo(Map<String, Object> orderInfo) {
+        this.orderInfo = orderInfo;
+    }
 }

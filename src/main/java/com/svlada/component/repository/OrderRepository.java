@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface OrderRepository extends JpaRepository<Order, Long>  , JpaSpecificationExecutor<Order> {
 
+    Order findOneByOutTradeNo(String outTradeNo);
 }

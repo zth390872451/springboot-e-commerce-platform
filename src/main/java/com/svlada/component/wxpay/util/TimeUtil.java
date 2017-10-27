@@ -26,12 +26,12 @@ public class TimeUtil {
 	}
 	
 	//当前时间戳（秒）
+	//当前时间后多少分钟
+
 	public static String getTimeStamp() {
 		int time = (int) (System.currentTimeMillis() / 1000);
 		return String.valueOf(time);
 	}
-
-	//当前时间后多少分钟
 	public static String getCurrentTimeNextMinute(int minute) {
 		Calendar nowTime = Calendar.getInstance();
 		nowTime.add(Calendar.MINUTE, minute);

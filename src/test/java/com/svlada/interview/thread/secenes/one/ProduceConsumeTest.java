@@ -25,11 +25,16 @@ public class ProduceConsumeTest {
     public static void main(String[] args) {
         LinkedList<String> share  = new LinkedList<>();
 
-        ConsumerThread consumerThread = new ConsumerThread(share);
-        ProduceThread produceThread = new ProduceThread(share);
+        ConsumerThread consumerThreadA = new ConsumerThread(share);
+        consumerThreadA.setName("consumerThreadA");
+        ConsumerThread consumerThreadB = new ConsumerThread(share);
+        consumerThreadB.setName("consumerThreadB");
+        ProduceThread produceThreadA = new ProduceThread(share);
+        produceThreadA.setName("produceThreadA");
 
-        consumerThread.start();
-        produceThread.start();
+        consumerThreadA.start();
+        consumerThreadB.start();
+        produceThreadA.start();
 
     }
 

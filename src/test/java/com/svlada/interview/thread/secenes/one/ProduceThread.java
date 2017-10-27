@@ -19,12 +19,12 @@ public class ProduceThread  extends Thread{
             synchronized (linkedList) {
                 try {
                     if (linkedList.size() == max) {
-                        System.out.println("linkedList 内元素的数量已经满了");
+                        System.out.println(this.getName()+"linkedList 内元素的数量已经满了");
                         linkedList.wait();
                     }
                     int nextInt = new Random().nextInt();
                     linkedList.add(nextInt+"");
-                    System.out.println("linkedList 入队元素 = " + nextInt+",linkedList 内元素的数量："+linkedList.size());
+                    System.out.println(this.getName()+":linkedList 入队元素 = " + nextInt+",linkedList 内元素的数量："+linkedList.size());
                     linkedList.notify();
                     Thread.sleep(500);
                 }catch (InterruptedException e){

@@ -4,7 +4,9 @@ import com.svlada.common.utils.ApplicationSupport;
 import com.svlada.component.repository.ProductRepository;
 import com.svlada.endpoint.dto.ShopCartDto;
 import com.svlada.entity.ShopCart;
+import com.svlada.entity.product.MajorImage;
 import com.svlada.entity.product.Product;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +28,14 @@ public class ShopCartBuilder {
             shopCartDto.setNumber(shopCart.getNumber());
             shopCartDto.setProductId(shopCart.getProductId());
             Product product = productRepository.findOne(shopCart.getProductId());
+            List<MajorImage> majorImages = product.getMajorImages();
             if (product!=null){
                 shopCartDto.setName(product.getName());
                 shopCartDto.setNowPrice(product.getNowPrice());
+                shopCartDto.setDesc(product.getDescription());
+            }
+            if (!StringUtils.isEmpty(majorImages)&&majorImages.size()>0){
+                shopCartDto.setImgUrl(majorImages.get(0).getImageUrl());
             }
             shopCartDtos.add(shopCartDto);
         }

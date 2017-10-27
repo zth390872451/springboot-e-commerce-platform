@@ -23,23 +23,105 @@ public class Order implements Serializable {
     @JoinColumn(name="user_id")//这里设置JoinColum设置了外键的名字，并且Order是关系维护端
     private User user;
 
-    //订单号,唯一
-    private String orderCode;
-    //微信订单号，唯一
-    private String wechatCode;
-
+    /**
+     * 订单号唯一[商户订单号]
+     */
+    private String outTradeNo;
     private Integer payStatus;//订单的支付状态 0：尚未支付 1：支付成功 2:支付失败 3:订单支付超时(失效)
+    public static final Integer pay_status_init = 0;
+    public static final Integer pay_status_success = 1;
+    public static final Integer pay_status_failed = 2;
+    public static final Integer pay_status_overtime = 3;
+    /**
+     * 商品名称
+     */
+    private String body;
+    /**
+     * 商品描述(该笔订单的备注、描述、明细等)
+     */
+    private String details;
+    /**
+     * 对应ali支付通知
+     */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "alipay_notify_id")
+    private AlipayNotify alipayNotify;
 
-    private Long orderTotal;//订单的总金额 = 订单项的总金额(商品费用+快递费用)
+    /**
+     * 对应wxpay支付通知
+     */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wxpay_notify_id")
+    private WxpayNotify wxpayNotify;
+    /**
+     * 交易支付时间
+     */
+    private Date paymentDate;
+    /**
+     * 支付金额
+     */
+    private Long totalMoney;//订单的总金额 = 订单项的总金额(商品费用+快递费用)
+
+    public enum PayType{
+        ALIPAY,WEINXIPAY
+    }
 
     private Date createDate = new Date();
 
-    public Long getOrderTotal() {
-        return orderTotal;
+    public String getOutTradeNo() {
+        return outTradeNo;
     }
 
-    public void setOrderTotal(Long orderTotal) {
-        this.orderTotal = orderTotal;
+    public void setOutTradeNo(String outTradeNo) {
+        this.outTradeNo = outTradeNo;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
+    public AlipayNotify getAlipayNotify() {
+        return alipayNotify;
+    }
+
+    public void setAlipayNotify(AlipayNotify alipayNotify) {
+        this.alipayNotify = alipayNotify;
+    }
+
+    public WxpayNotify getWxpayNotify() {
+        return wxpayNotify;
+    }
+
+    public void setWxpayNotify(WxpayNotify wxpayNotify) {
+        this.wxpayNotify = wxpayNotify;
+    }
+
+    public Date getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(Date paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    public Long getTotalMoney() {
+        return totalMoney;
+    }
+
+    public void setTotalMoney(Long totalMoney) {
+        this.totalMoney = totalMoney;
     }
 
     public Integer getPayStatus() {
@@ -48,22 +130,6 @@ public class Order implements Serializable {
 
     public void setPayStatus(Integer payStatus) {
         this.payStatus = payStatus;
-    }
-
-    public String getOrderCode() {
-        return orderCode;
-    }
-
-    public String getWechatCode() {
-        return wechatCode;
-    }
-
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode;
-    }
-
-    public void setWechatCode(String wechatCode) {
-        this.wechatCode = wechatCode;
     }
 
     public Date getCreateDate() {
