@@ -27,11 +27,11 @@ public class Order implements Serializable {
      * 订单号唯一[商户订单号]
      */
     private String outTradeNo;
-    private Integer payStatus;//订单的支付状态 0：尚未支付 1：支付成功 2:支付失败 3:订单支付超时(失效)
+    private Integer payStatus;//订单的支付状态 0：尚未支付 1：支付成功 2:订单支付超时(失效) 3:支付失败[暂时无用]
     public static final Integer pay_status_init = 0;
     public static final Integer pay_status_success = 1;
-    public static final Integer pay_status_failed = 2;
-    public static final Integer pay_status_overtime = 3;
+    public static final Integer pay_status_overtime = 2;
+    public static final Integer pay_status_failed = 3;
     /**
      * 商品名称
      */

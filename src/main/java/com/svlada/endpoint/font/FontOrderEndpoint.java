@@ -150,9 +150,11 @@ public class FontOrderEndpoint {
             return fail(CustomResponseStatus._40401, "记录不存在!");
         }
         Map<String, Object> map = new HashMap<String, Object>();
+        /*
         map.put("paymentDate", order.getPaymentDate());
-        map.put("payStatus", order.getPayStatus());
         map.put("outTradeNo", order.getWxpayNotify().getOutTradeNo());
+        */
+        map.put("payStatus", order.getPayStatus());
         return success(order.getPayStatus());
     }
 
