@@ -23,10 +23,13 @@ public class UserInfoUtil {
 
     // 3.拉取用户信息的请求地址
     public static String User_Message = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN";
+
     // 替换字符串
     public static String getUserMessage(String access_token, String openid) {
         return String.format(User_Message, access_token,openid);
     }
+
+    public static String GET_TICKET = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi";
 
 
     public static void main(String[] args) {

@@ -29,7 +29,7 @@ public class OrderServiceImpl implements OrderService{
     private OrderShipRepository orderShipRepository;
 
     public Order save(Set<Product> products, Set<OrderItem> orderItems, Order order,OrderShip orderShip){
-        //库存变更
+        //库存,销量变更
         productRepository.save(products);
 
         //订单生成

@@ -41,7 +41,18 @@ public class ProductInfoDescDto implements Serializable{
     @ApiModelProperty(notes="商品状态：0：新增，1：已上架，2：已下架")
     private Integer  status;
 
-   /* @ApiModelProperty(notes="商品所属类别ID")
+
+    private Long saleCount;//销量
+
+    public Long getSaleCount() {
+        return saleCount;
+    }
+
+    public void setSaleCount(Long saleCount) {
+        this.saleCount = saleCount;
+    }
+
+    /* @ApiModelProperty(notes="商品所属类别ID")
     private Long categoryId;//商品类别ID*/
 
     public Integer getStatus() {

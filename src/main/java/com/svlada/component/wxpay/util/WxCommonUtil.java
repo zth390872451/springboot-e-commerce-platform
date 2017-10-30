@@ -1,14 +1,21 @@
 package com.svlada.component.wxpay.util;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.svlada.component.wxpay.config.WxConfig;
+import com.svlada.endpoint.wechat.util.HttpsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
-import java.util.Iterator;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.UUID;
+
+import static com.svlada.component.wxpay.config.WxConfig.ACCESS_TOKEN;
+import static com.svlada.endpoint.wechat.util.UserInfoUtil.GET_TICKET;
 
 public class WxCommonUtil {
 	private static final Logger log = LoggerFactory.getLogger(WxCommonUtil.class);
@@ -97,5 +104,123 @@ public class WxCommonUtil {
 		sb.append("</xml>");
 		return sb.toString();
 	}
-	
+
+
+	public static String buildConfigSign(){
+		String jsapi_ticket = getTicket();//获取ticket
+		String sortString = WxCommonUtil.sort(jsapi_ticket, TimeUtil.getTimeStamp(), WxCommonUtil.getUuid());
+		String sha1 = WxCommonUtil.sha1(sortString);
+		return sha1;
+	}
+
+	public static String getTicket(){
+		String accessToken = getAccessToken();
+		String ticketUrl = WxConfig.TICKET_URL.replace("ACCESS_TOKEN",accessToken);
+		String response = HttpsUtil.httpsRequestToString(ticketUrl, "GET", null);
+		JSONObject jsonObject = JSON.parseObject(response);
+		log.info("请求到的 TICKET:{}", jsonObject.toJSONString());
+		String ticket = jsonObject.getString("ticket");
+		return ticket;
+	}
+
+
+	public static String getAccessToken(){
+		if (StringUtils.isEmpty(ACCESS_TOKEN)){
+			String response = HttpsUtil.httpsRequestToString(WxConfig.ACCESS_TOKEN_URL, "GET", null);
+			JSONObject jsonObject = JSON.parseObject(response);
+			String access_token = jsonObject.getString("access_token");
+			ACCESS_TOKEN = access_token;
+		}
+		return  ACCESS_TOKEN;
+	}
+
+	/**
+	 * 排序方法
+	 */
+	public static String sort(String token, String timestamp, String nonce) {
+		String[] strArray = {token, timestamp, nonce};
+		Arrays.sort(strArray);
+		StringBuilder sb = new StringBuilder();
+		for (String str : strArray) {
+			sb.append(str);
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * 将字符串进行sha1加密
+	 *
+	 * @param str 需要加密的字符串
+	 * @return 加密后的内容
+	 */
+	public static String sha1(String str) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-1");
+			digest.update(str.getBytes());
+			byte messageDigest[] = digest.digest();
+// Create Hex String
+			StringBuffer hexString = new StringBuffer();
+// 字节数组转换为 十六进制 数
+			for (int i = 0; i < messageDigest.length; i++) {
+				String shaHex = Integer.toHexString(messageDigest[i] & 0xFF);
+				if (shaHex.length() < 2) {
+					hexString.append(0);
+				}
+				hexString.append(shaHex);
+			}
+			return hexString.toString();
+
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+
+	/**
+	 * @Description: 前端jssdk页面配置需要用到的配置参数
+	 * @param @return hashmap {appid,timestamp,nonceStr,signature}
+	 * @param @throws Exception
+	 * @author dapengniao
+	 * @date 2016年3月19日 下午3:53:23
+	 */
+	public static HashMap<String, String> jsSDK_Sign(String url,Boolean debug) throws Exception {
+		String nonce_str = create_nonce_str();
+		String timestamp= TimeUtil.getTimeStamp();
+		String jsapi_ticket= WxCommonUtil.getTicket();
+		// 注意这里参数名必须全部小写，且必须有序
+		String  string1 = "jsapi_ticket=" + jsapi_ticket + "&noncestr=" + nonce_str
+				+ "&timestamp=" + timestamp  + "&url=" + url;
+		MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+		crypt.reset();
+		crypt.update(string1.getBytes("UTF-8"));
+		String signature = byteToHex(crypt.digest());
+		HashMap<String, String> jssdk=new HashMap<String, String>();
+		jssdk.put("appId", WxConfig.APP_ID);
+		jssdk.put("timestamp", timestamp);
+		jssdk.put("nonceStr", nonce_str);
+		jssdk.put("signature", signature);
+		if (debug){
+			jssdk.put("jsapi_ticket", jsapi_ticket);
+		}
+		return jssdk;
+
+	}
+
+	private static String byteToHex(final byte[] hash) {
+		Formatter formatter = new Formatter();
+		for (byte b : hash) {
+			formatter.format("%02x", b);
+		}
+		String result = formatter.toString();
+		formatter.close();
+		return result;
+	}
+
+	private static String create_nonce_str() {
+		return UUID.randomUUID().toString();
+	}
+
+
 }

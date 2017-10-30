@@ -5,19 +5,14 @@ import com.svlada.component.wxpay.config.WxConfig;
 import com.svlada.component.wxpay.util.MapUtils;
 import com.svlada.component.wxpay.util.TimeUtil;
 import com.svlada.component.wxpay.util.WxCommonUtil;
-import com.svlada.component.wxpay.util.XMLUtil;
 import com.svlada.endpoint.dto.TradeDTO;
-import org.jdom.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
-import java.util.Random;
 import java.util.SortedMap;
 
 public class WxClient {
@@ -40,7 +35,7 @@ public class WxClient {
 	public TradeDTO unifiedOrder(String outTradeNo, String body, String detail, int totalFee, String ip, String notifyUrl) {
 		SortedMap<String, Object> parameters = null;
 		try {
-			parameters = prepareOrder(outTradeNo, body, detail,totalFee, ip, notifyUrl);
+			/*parameters = prepareOrder(outTradeNo, body, detail,totalFee, ip, notifyUrl);
 			parameters.put("sign", WxCommonUtil.createSign("UTF-8", parameters));// sign签名key
 			String requestXML = WxCommonUtil.getRequestXml(parameters);// 生成xml格式字符串
 			
@@ -58,10 +53,11 @@ public class WxClient {
 			}
 			// 解析结果 resultStr
 			SortedMap<String, Object> resutlMap = XMLUtil.doXMLParse(responseStr);
-			SortedMap<String, Object> map = buildClientJson(resutlMap);
+			SortedMap<String, Object> map = buildClientJson(resutlMap);*/
+			SortedMap<String, Object> map = buildClientJson(null);
 			map.put("outTradeNo", outTradeNo);
 			return new TradeDTO(outTradeNo, map);
-		} catch (JDOMException | IOException e) {
+		} catch (/*JDOMException | */IOException e) {
 			log.error("wxpay 预支付失败,outTradeNO:{},body:{}",parameters.get("out_trade_no"),parameters.get("body"));
 			e.printStackTrace();
 		}
@@ -92,28 +88,26 @@ public class WxClient {
 
 	
 	/**
-	 * 生成预付快订单完成，返回给android,ios唤起微信所需要的参数。
+	 * 生成预付快订单完成
 	 */
 	private SortedMap<String, Object> buildClientJson(
 			Map<String, Object> resutlMap) throws UnsupportedEncodingException {
+		String prepay_id = WxCommonUtil.getUuid();
 		// 获取微信返回的签名
 		Map<String, Object> params = ImmutableMap.<String, Object> builder()
 				.put("appid", WxConfig.APP_ID)
 				.put("noncestr", WxCommonUtil.getUuid())
-				.put("package", "Sign=WXPay")
-				.put("partnerid", WxConfig.MCH_ID)
-				.put("prepayid", resutlMap.get("prepay_id"))
+				.put("package", "prepay_id="+prepay_id)
+//				.put("partnerid", WxConfig.MCH_ID)
+//				.put("prepayid", /*resutlMap.get("prepay_id")*/WxCommonUtil.getUuid())
 				.put("timestamp", TimeUtil.getTimeStamp()).build();
 		// key ASCII排序
 		SortedMap<String, Object> sortMap = MapUtils.sortMap(params);
-		sortMap.put("package", "Sign=WXPay");
-		// paySign的生成规则和Sign的生成规则同理
 		String paySign = WxCommonUtil.createSign("UTF-8", sortMap);
-		sortMap.put("sign", paySign);
-		//--------------------上述签名参数不变
-		//--------------------package 转 wxpackage
-		sortMap.remove("package");
-		sortMap.put("wxpackage", "Sign=WXPay");
+		sortMap.put("paySign", paySign);
 		return sortMap;
 	}
+
+
+
 }

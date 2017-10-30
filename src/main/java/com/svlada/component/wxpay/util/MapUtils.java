@@ -16,13 +16,10 @@ public class MapUtils {
 		 */
 
 		// 排序
-		Collections.sort(infoIds, new Comparator<Map.Entry<String, Object>>() {
-			public int compare(Map.Entry<String, Object> o1,
-					Map.Entry<String, Object> o2) {
-				// return (o2.getValue() - o1.getValue());//value处理
-				return (o1.getKey()).toString().compareTo(o2.getKey());
-			}
-		});
+		Collections.sort(infoIds, (o1, o2) -> {
+            // return (o2.getValue() - o1.getValue());//value处理
+            return (o1.getKey()).toString().compareTo(o2.getKey());
+        });
 		// 排序后
 		SortedMap<String, Object> sortmap = new TreeMap<String, Object>();
 		for (int i = 0; i < infoIds.size(); i++) {

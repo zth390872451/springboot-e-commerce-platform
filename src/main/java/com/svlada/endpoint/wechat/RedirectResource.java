@@ -7,27 +7,24 @@ import com.svlada.common.WebUtil;
 import com.svlada.common.request.CustomResponse;
 import com.svlada.common.utils.ApplicationSupport;
 import com.svlada.component.repository.UserRepository;
+import com.svlada.component.wxpay.util.WxCommonUtil;
 import com.svlada.endpoint.wechat.util.HttpsUtil;
 import com.svlada.endpoint.wechat.util.UserInfoUtil;
 import com.svlada.entity.User;
-import com.svlada.security.model.UserContext;
-import com.svlada.security.model.token.JwtToken;
 import com.svlada.security.model.token.JwtTokenFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.svlada.common.request.CustomResponseBuilder.success;
 
@@ -121,18 +118,22 @@ public class RedirectResource {
                             logger.info("用户性别:{}", sex);
                             logger.info("OpenId:{}", openid);
 
-                            UserRepository userRepository = (UserRepository) ApplicationSupport.getBean(UserRepository.class);
+                            UserRepository userRepository = ApplicationSupport.getBean(UserRepository.class);
                             User user = userRepository.findOneByOpenId(openId);
                             if (user==null){
                                 user = new User();
                             }
+                            user.setHeadImgUrl(headImgUrl);
+                            user.setSex(sex);
+                            user.setProvince(province);
+                            user.setCity(city);
                             user.setOpenId(openId);
+                            user.setUsername(openId);
                             user.setNickName(nickName);
                             user.setSex(sex);
                             user.setProvince(province);
                             user.setCity(city);
                             userRepository.save(user);
-
                         } catch (JSONException e) {
                             logger.error("获取用户信息失败 failed");
                             return "failed!";

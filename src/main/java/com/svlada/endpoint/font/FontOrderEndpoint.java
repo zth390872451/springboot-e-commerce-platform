@@ -9,14 +9,20 @@ import com.svlada.common.utils.OrderUtil;
 import com.svlada.component.repository.*;
 import com.svlada.component.service.OrderServiceImpl;
 import com.svlada.component.service.TradeService;
-import com.svlada.endpoint.dto.OrderDto;
-import com.svlada.endpoint.dto.OrderItemDto;
-import com.svlada.endpoint.dto.TradeDTO;
+import com.svlada.component.wxpay.api.WxClient;
+import com.svlada.endpoint.dto.*;
+import com.svlada.endpoint.dto.builder.OrderInfoBuilder;
+import com.svlada.endpoint.dto.builder.ProductInfoBuilder;
 import com.svlada.entity.*;
 import com.svlada.entity.product.Product;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -93,10 +99,7 @@ public class FontOrderEndpoint {
                 if (!product.getNowPrice().equals(orderItemDto.getUnitPrice())) {
                     return fail(CustomResponseStatus._40000);
                 }
-                //库存数量-number
-                product.setStock(product.getStock() - orderItemDto.getNumber());
                 products.add(product);
-
                 OrderItem orderItem = new OrderItem();
                 orderItem.setProduct(product);
                 orderItem.setNumber(orderItemDto.getNumber());
@@ -130,14 +133,10 @@ public class FontOrderEndpoint {
         Integer paymentAmount = order.getTotalMoney().intValue();//支付金额
         String wxpayNotifyUrl = "http://120.77.215.74/callBack/wx";
         String prepayId = new Random().nextInt() + "";
-        TradeDTO tradeDTO = new TradeDTO();
-        tradeDTO.setOutTradeNo(prepayId);
-//        TradeDTO tradeDTO = new WxClient().unifiedOrder(outTradeNo, body,details, paymentAmount, ip, wxpayNotifyUrl);
+        TradeDTO tradeDTO = new WxClient().unifiedOrder(outTradeNo, body,details, paymentAmount, ip, wxpayNotifyUrl);
         if (tradeDTO != null) {
             //微信订单号生成 成功，业务订单号初始化状态,尚未支付
-            Map<String, Object> result = new HashMap<>();
-            result.put("prepayId", prepayId);
-            return success(result);
+            return success(tradeDTO);
         }
         return fail();
     }
@@ -158,6 +157,15 @@ public class FontOrderEndpoint {
         return success(order.getPayStatus());
     }
 
+    @GetMapping("/list")
+    public CustomResponse list(@PageableDefault(value = 20, sort = { "id" }, direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<Order> orderPage = orderRepository.findAll(pageable);
+        Page<OrderInfoDto> dtoPage = orderPage.map(entity -> {
+            OrderInfoDto dto = OrderInfoBuilder.builderOrderInfoDto(entity);
+            return dto;
+        });
+        return success(dtoPage);
+    }
 
     @GetMapping("/get/{id}")
     public CustomResponse get(@PathVariable("id") Long id) {

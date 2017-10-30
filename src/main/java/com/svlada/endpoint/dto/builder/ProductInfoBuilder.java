@@ -1,6 +1,7 @@
 package com.svlada.endpoint.dto.builder;
 
 import com.svlada.endpoint.dto.MarkDto;
+import com.svlada.endpoint.dto.ProductDetailsDto;
 import com.svlada.endpoint.dto.ProductInfoDescDto;
 import com.svlada.endpoint.dto.resp.ProductInfo;
 import com.svlada.entity.product.Product;
@@ -28,12 +29,13 @@ public class ProductInfoBuilder {
         basicInfo.setSearchKey(source.getSearchKey());
         basicInfo.setStatus(source.getStatus());
         basicInfo.setStock(source.getStock());
+        basicInfo.setSaleCount(source.getSaleCount());
         return basicInfo;
     }
 
-    public static List<ProductInfoDescDto> builderPids(List<Product> products){
+    public static List<ProductInfoDescDto> builderPids(List<Product> products) {
         List<ProductInfoDescDto> productInfoDescDtos = new ArrayList<>();
-        for (Product product:products){
+        for (Product product : products) {
             productInfoDescDtos.add(builderProductInfoDescDto(product));
         }
         return productInfoDescDtos;
@@ -41,6 +43,7 @@ public class ProductInfoBuilder {
 
     /**
      * 获取产品的营销策略信息
+     *
      * @param source
      * @return
      */
@@ -75,6 +78,35 @@ public class ProductInfoBuilder {
         productInfo.setStatus(source.getStatus());
         productInfo.setStock(source.getStock());
         return productInfo;
+    }
+
+    /**
+     * 获取产品的详细信息
+     *
+     * @param source
+     * @return
+     */
+    public static ProductDetailsDto builderProductDetailsDto(Product source) {
+        ProductDetailsDto dto = new ProductDetailsDto();
+        dto.setId(source.getId());
+        dto.setCode(source.getCode());
+        dto.setDescription(source.getDescription());
+        dto.setIntroduce(source.getIntroduce());
+        dto.setName(source.getName());
+        dto.setTitle(source.getTitle());
+        dto.setNowPrice(source.getNowPrice());
+        dto.setPrice(source.getPrice());
+        dto.setSearchKey(source.getSearchKey());
+        dto.setStatus(source.getStatus());
+        dto.setStock(source.getStock());
+        dto.setSaleCount(source.getSaleCount());
+        if (source.getMajorImages() != null && source.getMajorImages().size() > 0) {
+            dto.setMajorImages(source.getMajorImages());
+        }
+        if (source.getDetailsImages() != null && source.getDetailsImages().size() > 0) {
+            dto.setDetailsImages(source.getDetailsImages());
+        }
+        return dto;
     }
 
 }

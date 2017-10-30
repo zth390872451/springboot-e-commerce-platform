@@ -4,7 +4,6 @@ package com.svlada.endpoint.dto;
 import java.util.Map;
 
 public class TradeDTO {
-    
     private String outTradeNo;
     
     private Map<String,Object> orderInfo;
@@ -16,7 +15,6 @@ public class TradeDTO {
         this.outTradeNo = outTradeNo;
         this.orderInfo = orderInfo;
     }
-    
 
     public String getOutTradeNo() {
         return outTradeNo;

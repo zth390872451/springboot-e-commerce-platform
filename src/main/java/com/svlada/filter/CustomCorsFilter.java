@@ -6,13 +6,6 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
-/**
- * CustomCorsFilter
- * 
- * @author vladimir.stankovic
- *
- * Aug 3, 2016
- */
 public class CustomCorsFilter extends CorsFilter {
 
     public CustomCorsFilter() {
@@ -27,7 +20,7 @@ public class CustomCorsFilter extends CorsFilter {
         config.setMaxAge(36000L);
         config.setAllowedMethods(Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", config);
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 }

@@ -1,16 +1,21 @@
 package com.svlada.component.service;
 
+import com.svlada.component.repository.OrderItemRepository;
 import com.svlada.component.repository.OrderRepository;
 import com.svlada.component.repository.WxpayNotifyRepository;
 import com.svlada.component.wxpay.config.WxConfig;
 import com.svlada.component.wxpay.util.TimeUtil;
 import com.svlada.endpoint.dto.TradeDTO;
 import com.svlada.entity.Order;
+import com.svlada.entity.OrderItem;
 import com.svlada.entity.WxpayNotify;
+import com.svlada.entity.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+
+import java.util.Set;
 
 import static com.svlada.entity.Order.pay_status_init;
 import static com.svlada.entity.Order.pay_status_success;
@@ -21,6 +26,8 @@ public class TradeServiceImpl implements TradeService{
 
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private OrderItemRepository orderItemRepository;
     @Autowired
     private WxpayNotifyRepository wxpayNotifyRepository;
     @Override
@@ -45,6 +52,13 @@ public class TradeServiceImpl implements TradeService{
             order.setPayStatus(pay_status_success);
             order.setPaymentDate(TimeUtil.getDateStrTo(wxpayNotify.getTimeEnd(), TimeUtil.FORMAT_YMD_HMS));
             orderRepository.save(order);
+            //更新库存、销量()
+            Set<OrderItem> items = order.getItems();
+            for (OrderItem orderItem:items){
+                Product product = orderItem.getProduct();
+                product.setStock(product.getStock()-orderItem.getNumber());
+                product.setSaleCount(product.getSaleCount()+orderItem.getNumber());
+            }
         }
     }
 }

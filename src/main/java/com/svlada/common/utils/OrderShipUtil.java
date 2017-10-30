@@ -15,6 +15,7 @@ public class OrderShipUtil {
         orderShip.setPhone(address.getPhone());
         orderShip.setProvince(address.getProvince());
         orderShip.setTel(address.getMobile());
+        orderShip.setZip(address.getZip());
         orderShip.setRemark(orderDto.getRemark());
         return orderShip;
     }

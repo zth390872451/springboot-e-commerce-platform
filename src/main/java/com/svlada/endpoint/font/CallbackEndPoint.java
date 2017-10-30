@@ -1,5 +1,5 @@
 package com.svlada.endpoint.font;
-import com.svlada.common.request.CustomResponse;
+
 import com.svlada.component.service.TradeService;
 import com.svlada.component.wxpay.config.WxConfig;
 import com.svlada.component.wxpay.util.WxCommonUtil;
@@ -8,17 +8,18 @@ import com.svlada.entity.WxpayNotify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author xmc
@@ -36,30 +37,7 @@ public class CallbackEndPoint {
 	//List<Double> amountList = new ArrayList<Double>(Arrays.asList(0.01, 0.02, 0.03, 0.04, 0.05));
 	
 
-	/**
-	 * 订单状态查询
-	 */
-	/*@RequestMapping(value = "/findTradeStatus",method = RequestMethod.GET)
-	public CustomResponse findTradeStatus(@RequestParam(value = "holderId") long holderId,
-										  @RequestParam(value = "outTradeNo") String outTradeNo){
-		Holder holder = chargeApiService.getHolder(holderId+"");
-		if (holder == null) {
-			return fail(MyHttpStatus._400);
-		}
-		BaseSim sim = baseSimRepository.findOneByImei(holder.getImei());
-		if (sim == null) {
-			return fail(MyHttpStatus._400);
-		}
-		Trade trade = tradeService.findOneByOutTradeNo(outTradeNo);
-		if (trade == null) {
-			return fail(MyHttpStatus._400);
-		}
-		if (!trade.getIccid().equals(sim.getIccid())) {
-			return fail(MyHttpStatus._400);
-		}
-		f
-		return success(map);
-	}*/
+
 
 	/*public static void main(String[] args) {
 		Map<String, String> params = new HashMap<String, String>();
