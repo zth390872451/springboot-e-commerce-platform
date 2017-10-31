@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,9 +61,15 @@ public class WebUtil {
         UserRepository userRepository = ApplicationSupport.getBean(UserRepository.class);
         JwtTokenFactory jwtTokenFactory = ApplicationSupport.getBean(JwtTokenFactory.class);
         User user = userRepository.findOneByOpenId(openId);
-        List<GrantedAuthority> authorities = user.getRoles().stream()
+        /*List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getRole().authority()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+        SimpleGrantedAuthority role_admin = new SimpleGrantedAuthority("ROLE_ADMIN");
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(role_admin);
+        /*user.getRoles().stream()
+                .map(authority -> new SimpleGrantedAuthority("ROLE_ADMIN"))
+                .collect(Collectors.toList())*/;
         UserContext userContext = UserContext.create(user.getUsername(), authorities);
         JwtToken jwtToken = jwtTokenFactory.createAccessJwtToken(userContext);
         String token = jwtToken.getToken();

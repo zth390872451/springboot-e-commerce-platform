@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,11 +51,14 @@ public class RedirectResource {
      * @param state 重定向状态参数
      * @return
      */
-    @RequestMapping("/")
+    @RequestMapping("/drink")
     public String wechatLogin(@RequestHeader(name = "accessToken", required = false) String accessToken,
                               @RequestParam(name = "code", required = false) String code,
-                              @RequestParam(name = "state",required = false,defaultValue = "STATE") String state
-                            ,RedirectAttributes attributes) {
+                              @RequestParam(name = "redirect_uri", required = false) String redirect_uri,
+                              @RequestParam(name = "state",required = false,defaultValue = "STATE") String state,
+                            HttpServletRequest httpServletRequest) {
+        Map<String, String[]> parameterMap = httpServletRequest.getParameterMap();
+        logger.info("请求参数：parameterMap:{}",parameterMap.values());
         if (StringUtils.isEmpty(code)){//用户尚未授权
             logger.info("用户尚未授权,准备进入提示授权页面.");
         }
@@ -71,10 +75,10 @@ public class RedirectResource {
             String WebAccessToken = "";
             String openId = "";
             String nickName,sex,openid = "";
-            String REDIRECT_URI = "http://www.dsunyun.com";
+            String REDIRECT_URI = "http://www.dsunyun.com/drink";
             String SCOPE = "snsapi_userinfo";
 
-            String getCodeUrl = UserInfoUtil.getCode(APPID, REDIRECT_URI, SCOPE);
+            String getCodeUrl = UserInfoUtil.getCode(APPID, redirect_uri, SCOPE);
             logger.info("第一步:用户授权, get Code URL:{}", getCodeUrl);
 
             // 替换字符串，获得请求access token URL
@@ -146,7 +150,8 @@ public class RedirectResource {
             }
             logger.info("授权成功!");
             String jwtToken = WebUtil.createTokenByOpenId(openId);
-            return "redirect:http://www.dsunyun.com:81?openId="+openId+"&access_token="+WebAccessToken+"&jwtToken="+jwtToken;
+            return "redirect:"+REDIRECT_URI+"openId="+openId+"&access_token="+WebAccessToken+"&jwtToken="+jwtToken;
+//            return "redirect:http://www.dsunyun.com:81?openId="+openId+"&access_token="+WebAccessToken+"&jwtToken="+jwtToken;
         }
         logger.info("尚未授权,即将调到微信的授权页面");
         return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6aef1915818229a5&redirect_uri=http%3A%2F%2Fwww.dsunyun.com&response_type=code&scope=snsapi_userinfo&#wechat_redirect";

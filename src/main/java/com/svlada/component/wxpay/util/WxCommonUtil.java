@@ -2,7 +2,9 @@ package com.svlada.component.wxpay.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.svlada.component.WeixinThread;
 import com.svlada.component.wxpay.config.WxConfig;
+import com.svlada.endpoint.wechat.AccessToken;
 import com.svlada.endpoint.wechat.util.HttpsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,6 +116,12 @@ public class WxCommonUtil {
 	}
 
 	public static String getTicket(){
+		if (StringUtils.isEmpty(ACCESS_TOKEN)){
+			String response = HttpsUtil.httpsRequestToString(WxConfig.ACCESS_TOKEN_URL, "GET", null);
+			JSONObject jsonObject = JSON.parseObject(response);
+			String access_token = jsonObject.getString("access_token");
+			ACCESS_TOKEN = access_token;
+		}
 		String accessToken = getAccessToken();
 		String ticketUrl = WxConfig.TICKET_URL.replace("ACCESS_TOKEN",accessToken);
 		String response = HttpsUtil.httpsRequestToString(ticketUrl, "GET", null);
@@ -129,10 +137,17 @@ public class WxCommonUtil {
 			String response = HttpsUtil.httpsRequestToString(WxConfig.ACCESS_TOKEN_URL, "GET", null);
 			JSONObject jsonObject = JSON.parseObject(response);
 			String access_token = jsonObject.getString("access_token");
+			String expiresIn = jsonObject.getString("expiresIn");
+			if (!StringUtils.isEmpty(access_token)){
+				WeixinThread.accessToken.setToken(access_token);
+				WeixinThread.accessToken.setExpiresIn(Integer.valueOf(expiresIn));
+			}
 			ACCESS_TOKEN = access_token;
 		}
 		return  ACCESS_TOKEN;
 	}
+
+
 
 	/**
 	 * 排序方法
@@ -188,7 +203,8 @@ public class WxCommonUtil {
 	public static HashMap<String, String> jsSDK_Sign(String url,Boolean debug) throws Exception {
 		String nonce_str = create_nonce_str();
 		String timestamp= TimeUtil.getTimeStamp();
-		String jsapi_ticket= WxCommonUtil.getTicket();
+//		String jsapi_ticket= WxCommonUtil.getTicket();
+		String jsapi_ticket = WeixinThread.jsapiTicket.getTicket();
 		// 注意这里参数名必须全部小写，且必须有序
 		String  string1 = "jsapi_ticket=" + jsapi_ticket + "&noncestr=" + nonce_str
 				+ "&timestamp=" + timestamp  + "&url=" + url;

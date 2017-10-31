@@ -7,6 +7,7 @@ import com.svlada.component.wxpay.config.WxConfig;
 import com.svlada.endpoint.wechat.util.HttpsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,13 +15,13 @@ import static com.svlada.component.wxpay.config.WxConfig.ACCESS_TOKEN_URL;
 
 
 @Component
-public class OrderStatusCheckJob {
+public class OrderStatusCheckJob implements CommandLineRunner {
 
 	private static final Logger logger = LoggerFactory.getLogger(WxClient.class);
 
 
 	// cron表达式：每个一小时执行一次
-	@Scheduled(cron="0 0 */1 * * ?")
+//	@Scheduled(cron="0 0 */1 * * ?")
 //	@Scheduled(cron="0 */1 * * * ?")
 	public void getAccessToken(){
 		try {
@@ -36,4 +37,10 @@ public class OrderStatusCheckJob {
 		}
 	}
 
+	@Override
+	public void run(String... strings) throws Exception {
+		WeixinThread weixinThread = new WeixinThread();
+		Thread thread = new Thread(weixinThread);
+		thread.start();
+	}
 }

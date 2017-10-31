@@ -103,30 +103,23 @@ public class ProductBackEndpoint {
     public CustomResponse list(@RequestParam(name = "key",required = false) String key,
                                @PageableDefault(value = 20, sort = { "id" }, direction = Sort.Direction.ASC) Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(this.getSpecification(key), pageable);
-        Page<ProductInfoDescDto> dtoPage = productPage.map(new Converter<Product, ProductInfoDescDto>() {
-            @Override
-            public ProductInfoDescDto convert(Product entity) {
-                ProductInfoDescDto dto = ProductInfoBuilder.builderProductInfoDescDto(entity);
-                return dto;
-            }
+        Page<ProductInfoDescDto> dtoPage = productPage.map(entity -> {
+            ProductInfoDescDto dto = ProductInfoBuilder.builderProductInfoDescDto(entity);
+            return dto;
         });
         return success(dtoPage);
     }
 
     private Specification<Product> getSpecification(String key){
-        return new Specification<Product>(){
-            @Override
-            public Predicate toPredicate(Root<Product> root,
-                                         CriteriaQuery<?> query, CriteriaBuilder cb) {
-                List<Predicate> predicate = new ArrayList<>();
-                if(!StringUtils.isEmpty(key)){
-                    Predicate searchKey = cb.like(root.get("searchKey").as(String.class), "%" + key + "%");
-                    Predicate name = cb.like(root.get("name").as(String.class), "%" + key + "%");
-                    predicate.add(cb.or(searchKey,name));
-                }
-                Predicate[] pre = new Predicate[predicate.size()];
-                return query.where(predicate.toArray(pre)).getRestriction();
+        return (root, query, cb) -> {
+            List<Predicate> predicate = new ArrayList<>();
+            if(!StringUtils.isEmpty(key)){
+                Predicate searchKey = cb.like(root.get("searchKey").as(String.class), "%" + key + "%");
+                Predicate name = cb.like(root.get("name").as(String.class), "%" + key + "%");
+                predicate.add(cb.or(searchKey,name));
             }
+            Predicate[] pre = new Predicate[predicate.size()];
+            return query.where(predicate.toArray(pre)).getRestriction();
         };
     }
 

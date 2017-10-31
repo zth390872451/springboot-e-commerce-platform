@@ -13,6 +13,8 @@ public class WxConfig {
 
 	public static String ACCESS_TOKEN ="";
 
+	public static String JSAPI_TICKET ="";
+
 	// 微信支付统一接口(POST)
 	public final static String UNIFIED_ORDER_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 

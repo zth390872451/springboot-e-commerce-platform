@@ -99,7 +99,7 @@ public class WxClient {
 				.put("noncestr", WxCommonUtil.getUuid())
 				.put("package", "prepay_id="+prepay_id)
 //				.put("partnerid", WxConfig.MCH_ID)
-//				.put("prepayid", /*resutlMap.get("prepay_id")*/WxCommonUtil.getUuid())
+				.put("prepayid", /*resutlMap.get("prepay_id")*/prepay_id)
 				.put("timestamp", TimeUtil.getTimeStamp()).build();
 		// key ASCII排序
 		SortedMap<String, Object> sortMap = MapUtils.sortMap(params);

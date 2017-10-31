@@ -242,4 +242,8 @@ public class User {
     public List<UserRole> getRoles() {
         return roles;
     }
+
+    public void setRoles(List<UserRole> roles) {
+        this.roles = roles;
+    }
 }

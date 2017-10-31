@@ -11,6 +11,7 @@ import static com.svlada.common.utils.DateUtils.PART_DATE_FORMAT;
 
 public class FileUploadUtils {
 
+    public static final String http_path = "http://www.dsunyun.com";
     /**
      * 保存文件路径：年/月/日/
      * @param
@@ -41,7 +42,7 @@ public class FileUploadUtils {
                 File target = new File(dir, originalFilename);
                 file.transferTo(target);
                 String absolutePath = target.getAbsolutePath();
-                String relativePath = absolutePath.replace(tomcatPath, "");
+                String relativePath = http_path + absolutePath.replace(tomcatPath, "");
                 filePaths.add(relativePath);
             }
             return filePaths;
