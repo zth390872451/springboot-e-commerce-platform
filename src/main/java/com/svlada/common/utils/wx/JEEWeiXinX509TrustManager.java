@@ -1,4 +1,4 @@
-package com.svlada.endpoint.wechat.util;
+package com.svlada.common.utils.wx;
 
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.CertificateException;

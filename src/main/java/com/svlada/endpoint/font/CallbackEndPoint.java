@@ -1,9 +1,9 @@
 package com.svlada.endpoint.font;
 
 import com.svlada.component.service.TradeService;
-import com.svlada.component.wxpay.config.WxConfig;
-import com.svlada.component.wxpay.util.WxCommonUtil;
-import com.svlada.component.wxpay.util.XMLUtil;
+import com.svlada.config.WxConfig;
+import com.svlada.common.utils.wx.WxCommonUtil;
+import com.svlada.common.utils.wx.XMLUtil;
 import com.svlada.entity.WxpayNotify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

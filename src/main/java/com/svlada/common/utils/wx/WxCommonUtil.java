@@ -1,23 +1,19 @@
-package com.svlada.component.wxpay.util;
+package com.svlada.common.utils.wx;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.svlada.component.WeixinThread;
-import com.svlada.component.wxpay.config.WxConfig;
-import com.svlada.endpoint.wechat.AccessToken;
-import com.svlada.endpoint.wechat.util.HttpsUtil;
+import com.svlada.config.WxConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static com.svlada.component.wxpay.config.WxConfig.ACCESS_TOKEN;
-import static com.svlada.endpoint.wechat.util.UserInfoUtil.GET_TICKET;
+import static com.svlada.config.WxConfig.ACCESS_TOKEN;
 
 public class WxCommonUtil {
 	private static final Logger log = LoggerFactory.getLogger(WxCommonUtil.class);

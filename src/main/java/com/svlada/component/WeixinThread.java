@@ -2,10 +2,10 @@ package com.svlada.component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.svlada.component.wxpay.config.WxConfig;
+import com.svlada.config.WxConfig;
 import com.svlada.endpoint.wechat.AccessToken;
 import com.svlada.endpoint.wechat.JsapiTicket;
-import com.svlada.endpoint.wechat.util.HttpsUtil;
+import com.svlada.common.utils.wx.HttpsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;

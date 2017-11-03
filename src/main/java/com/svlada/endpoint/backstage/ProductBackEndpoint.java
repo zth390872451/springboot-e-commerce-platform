@@ -2,23 +2,23 @@ package com.svlada.endpoint.backstage;
 
 import com.svlada.common.WebUtil;
 import com.svlada.common.request.CustomResponse;
-import com.svlada.common.utils.FileUploadUtils;
-import com.svlada.component.service.ProductService;
-import com.svlada.endpoint.dto.MarkDto;
-import com.svlada.endpoint.dto.builder.ProductInfoBuilder;
-import com.svlada.endpoint.dto.resp.ProductInfo;
-import com.svlada.entity.User;
-import com.svlada.entity.product.DetailsImage;
-import com.svlada.entity.product.MajorImage;
-import com.svlada.entity.product.Product;
-import com.svlada.endpoint.dto.ProductInfoDescDto;
 import com.svlada.component.repository.CategoryRepository;
 import com.svlada.component.repository.DetailsImageRepository;
 import com.svlada.component.repository.MajorImageRepository;
 import com.svlada.component.repository.ProductRepository;
-import io.swagger.annotations.*;
+import com.svlada.component.service.ProductService;
+import com.svlada.config.ConstantConfig;
+import com.svlada.endpoint.dto.MarkDto;
+import com.svlada.endpoint.dto.ProductInfoDescDto;
+import com.svlada.endpoint.dto.builder.ProductInfoBuilder;
+import com.svlada.entity.User;
+import com.svlada.entity.product.DetailsImage;
+import com.svlada.entity.product.MajorImage;
+import com.svlada.entity.product.Product;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,11 +28,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.Predicate;
 import javax.validation.Valid;
-import java.io.File;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.svlada.common.request.CustomResponseBuilder.fail;
 import static com.svlada.common.request.CustomResponseBuilder.success;
@@ -212,6 +210,11 @@ public class ProductBackEndpoint {
         List<DetailsImage> detailImages = detailsImageRepository.findAllByProductIdOrderById(product.getId());
         Map<String,Object> result = new HashMap<>();
         result.put("majorImages",majorImages);
+        if (StringUtils.isEmpty(detailImages)){
+            DetailsImage detailsImage = new DetailsImage();
+            detailsImage.setImageUrl(ConstantConfig.DEFAULT_PIC);
+            detailImages.add(detailsImage);
+        }
         result.put("detailImages",detailImages);
         return success(result);
     }

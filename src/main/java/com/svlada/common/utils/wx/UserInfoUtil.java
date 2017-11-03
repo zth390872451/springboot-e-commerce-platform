@@ -1,4 +1,4 @@
-package com.svlada.endpoint.wechat.util;
+package com.svlada.common.utils.wx;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

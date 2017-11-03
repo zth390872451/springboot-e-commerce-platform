@@ -1,10 +1,7 @@
-package com.svlada.component.wxpay.api;
+package com.svlada.common.utils.wx;
 
 import com.google.common.collect.ImmutableMap;
-import com.svlada.component.wxpay.config.WxConfig;
-import com.svlada.component.wxpay.util.MapUtils;
-import com.svlada.component.wxpay.util.TimeUtil;
-import com.svlada.component.wxpay.util.WxCommonUtil;
+import com.svlada.config.WxConfig;
 import com.svlada.endpoint.dto.TradeDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +12,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.SortedMap;
 
-public class WxClient {
-	private static final Logger log = LoggerFactory.getLogger(WxClient.class);
+public class WxPayUtil {
+	private static final Logger log = LoggerFactory.getLogger(WxPayUtil.class);
 	private RestTemplate restTemplate = new RestTemplate();
 	
 

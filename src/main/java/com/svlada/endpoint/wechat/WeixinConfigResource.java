@@ -1,18 +1,14 @@
 package com.svlada.endpoint.wechat;
 
 import com.svlada.common.request.CustomResponse;
-import com.svlada.component.wxpay.api.WxClient;
-import com.svlada.component.wxpay.util.WxCommonUtil;
+import com.svlada.common.utils.wx.WxPayUtil;
+import com.svlada.common.utils.wx.WxCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Map;
 
 import static com.svlada.common.request.CustomResponseBuilder.fail;
@@ -21,7 +17,7 @@ import static com.svlada.common.request.CustomResponseBuilder.success;
 @RestController
 public class WeixinConfigResource {
 
-    private static final Logger log = LoggerFactory.getLogger(WxClient.class);
+    private static final Logger log = LoggerFactory.getLogger(WxPayUtil.class);
 
     /**
      * @Description: 前端获取微信JSSDK的配置参数

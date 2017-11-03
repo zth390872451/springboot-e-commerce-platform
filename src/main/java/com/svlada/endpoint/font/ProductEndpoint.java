@@ -1,28 +1,25 @@
 package com.svlada.endpoint.font;
 
 import com.svlada.common.request.CustomResponse;
-import com.svlada.endpoint.dto.MarkDto;
+import com.svlada.component.repository.ProductRepository;
 import com.svlada.endpoint.dto.ProductDetailsDto;
-import com.svlada.endpoint.dto.ProductInfoDescDto;
 import com.svlada.endpoint.dto.builder.ProductInfoBuilder;
 import com.svlada.entity.product.Product;
-import com.svlada.component.repository.ProductRepository;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +45,7 @@ public class ProductEndpoint {
             ProductDetailsDto dto = ProductInfoBuilder.builderProductDetailsDto(entity);
             return dto;
         });
-        return success(productPage);
+        return success(dtoPage);
     }
 
     private Specification<Product> getSpecification(String key,Boolean recommend,Boolean isNew){
@@ -58,6 +55,10 @@ public class ProductEndpoint {
                 Predicate searchKeyPredicate = cb.like(root.get("searchKey").as(String.class), "%" + key + "%");
                 Predicate namePredicate = cb.like(root.get("name").as(String.class), "%" + key + "%");
                 predicates.add(cb.or(searchKeyPredicate,namePredicate));
+            }
+            if(!StringUtils.isEmpty(recommend)){
+                Predicate predicate = cb.equal(root.get("recommend").as(Boolean.class), recommend);
+                predicates.add(predicate);
             }
             if(!StringUtils.isEmpty(isNew)){
                 Predicate predicate = cb.equal(root.get("isNew").as(Boolean.class), isNew);

@@ -1,4 +1,4 @@
-package com.svlada.endpoint.wechat.util;
+package com.svlada.common.utils.wx;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;

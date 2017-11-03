@@ -11,6 +11,8 @@ import java.util.List;
 @Table(name = "Product")
 public class Product implements Serializable {
 
+
+
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.AUTO)

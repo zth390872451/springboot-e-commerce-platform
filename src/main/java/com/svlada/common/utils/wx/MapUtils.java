@@ -1,4 +1,4 @@
-package com.svlada.component.wxpay.util;
+package com.svlada.common.utils.wx;
 
 import java.util.*;
 

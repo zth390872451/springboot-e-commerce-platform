@@ -2,21 +2,17 @@ package com.svlada.endpoint.dto;
 
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class UserDto implements Serializable{
 
     private Long id;
     private String username;
     private String nickName;
-    private String realName;
     private String sex;
-    private Date birthday;
     private String province;
     private String city;
     private String address;
     private String mobile;//手机号码
-    private String email;//邮箱
 
     public Long getId() {
         return id;
@@ -42,28 +38,12 @@ public class UserDto implements Serializable{
         this.nickName = nickName;
     }
 
-    public String getRealName() {
-        return realName;
-    }
-
-    public void setRealName(String realName) {
-        this.realName = realName;
-    }
-
     public String getSex() {
         return sex;
     }
 
     public void setSex(String sex) {
         this.sex = sex;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
     }
 
     public String getProvince() {
@@ -98,11 +78,4 @@ public class UserDto implements Serializable{
         this.mobile = mobile;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

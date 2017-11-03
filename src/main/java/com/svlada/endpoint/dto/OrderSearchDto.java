@@ -22,6 +22,14 @@ public class OrderSearchDto implements Serializable{
 
     private Integer payStatus;
 
+    public OrderSearchDto(String wechatCode, String orderCode, Date startDate, Date endDate, Integer payStatus) {
+        this.wechatCode = wechatCode;
+        this.orderCode = orderCode;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.payStatus = payStatus;
+    }
+
     public String getWechatCode() {
         return wechatCode;
     }

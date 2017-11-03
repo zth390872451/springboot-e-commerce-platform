@@ -28,6 +28,7 @@ public class User {
     /*@OneToMany
     private List<Partner> partners;*/
 
+
     @OneToMany
     @JoinColumn(name="APP_USER_ID", referencedColumnName="ID")
     private List<UserRole> roles;
@@ -58,6 +59,26 @@ public class User {
 
     private String jwtToken;
 
+    private String webAccessToken;
+
+    private String accessToken;
+
+    public String getWebAccessToken() {
+        return webAccessToken;
+    }
+
+    public void setWebAccessToken(String webAccessToken) {
+        this.webAccessToken = webAccessToken;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
     public User() { }
 
     public User(Long id, String username, String password, List<UserRole> roles) {
@@ -66,6 +87,7 @@ public class User {
         this.password = password;
         this.roles = roles;
     }
+
 
     public String getJwtToken() {
         return jwtToken;
@@ -241,9 +263,5 @@ public class User {
 
     public List<UserRole> getRoles() {
         return roles;
-    }
-
-    public void setRoles(List<UserRole> roles) {
-        this.roles = roles;
     }
 }
