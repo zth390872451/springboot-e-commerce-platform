@@ -57,6 +57,7 @@ public class ProductInfoBuilder {
         markDto.setPrice(source.getPrice());
         markDto.setRecommend(source.getRecommend());
         markDto.setSpecialPrice(source.getSpecialPrice());
+        markDto.setCyclic(source.getCyclic());
         return markDto;
     }
 

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.svlada.common.request.CustomResponseBuilder.success;
 
@@ -70,15 +71,32 @@ public class ProductEndpoint {
     }
 
     /**
-     *  根据类别查询商品 分页 排序
+     *  查询首页轮询的商品，如果详情图的商品不足3个，则将展示 按照id降序的有详情图的商品
      */
-    @GetMapping(value = "/category/list2")
-    public CustomResponse list2(@RequestParam("categoryId")Long categoryId,
-                                Pageable pageable) {
-        List<Product> productList = productRepository.findAllProductByCategoryId(categoryId,pageable);
-        return success(productList);
+    @GetMapping(value = "/cyclic")
+    public CustomResponse cyclic() {
+        List<Product> productList = productRepository.findProductByCyclicIsTrue();
+        List<ProductDetailsDto> detailsDtos = productList.stream().filter(product -> product.getDetailsImages()!=null && product.getDetailsImages().size()>0).map(entity -> {
+            ProductDetailsDto dto = ProductInfoBuilder.builderProductDetailsDto(entity);
+            return dto;
+        }).collect(Collectors.toList());
+        if (detailsDtos!=null && detailsDtos.size()<Product.CYCLIC_MAX){
+            List<Long> productIds = new ArrayList<>();
+            for (ProductDetailsDto dt:detailsDtos) {
+                productIds.add(dt.getId());
+            }
+//            detailsDtos.stream().map(dt->productIds.add(dt.getId()));
+            List<Product> products = productRepository.findAllByIdNotInOrderByIdDesc(productIds);
+            for (Product product:products) {
+                if (detailsDtos.size()<Product.CYCLIC_MAX){
+                    if (product.getDetailsImages()!=null && product.getDetailsImages().size()>0){
+                        detailsDtos.add(ProductInfoBuilder.builderProductDetailsDto(product));
+                    }
+                }
+            }
+        }
+        return success(detailsDtos);
     }
-
 
 
 }

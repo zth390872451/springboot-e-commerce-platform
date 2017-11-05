@@ -5,14 +5,13 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.svlada.common.WebUtil;
 import com.svlada.common.request.CustomResponse;
-import com.svlada.common.request.CustomResponseStatus;
 import com.svlada.common.utils.ApplicationSupport;
-import com.svlada.component.repository.PartnerRepository;
-import com.svlada.component.repository.UserRepository;
-import com.svlada.config.WxConfig;
-import com.svlada.config.ConstantConfig;
 import com.svlada.common.utils.wx.HttpsUtil;
 import com.svlada.common.utils.wx.UserInfoUtil;
+import com.svlada.component.repository.PartnerRepository;
+import com.svlada.component.repository.UserRepository;
+import com.svlada.config.ConstantConfig;
+import com.svlada.config.WxConfig;
 import com.svlada.entity.Partner;
 import com.svlada.entity.User;
 import org.slf4j.Logger;
@@ -26,10 +25,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static com.svlada.common.request.CustomResponseBuilder.fail;
 import static com.svlada.common.request.CustomResponseBuilder.success;
 
 /**
@@ -81,6 +78,38 @@ public class RedirectResource {
         response.sendRedirect(ConstantConfig.myself);
     }
 
+    /**
+     * 好友分享 功能
+     */
+    @GetMapping("/share")
+    public void JSSDK_config(
+            @RequestParam(value = "shareOpenId") String shareOpenId,
+            HttpServletResponse response) throws IOException {
+        User currentUser = WebUtil.getCurrentUser();
+        User shareUser = userRepository.findOneByOpenId(shareOpenId);//分享人
+        if (shareUser == null) {
+            response.sendRedirect(ConstantConfig.error_404);
+        }
+        Long userId = shareUser.getId();
+        //查看该用户是否已经有过合作伙伴
+        Partner partner = partnerRepository.findOneByUserId(userId);
+        if (partner == null) {//没有，则添加分享人为合作伙伴
+            partner = new Partner();
+            partner.setShareUser(shareUser);
+            partner.setUserId(currentUser.getId());
+            partnerRepository.save(partner);
+        }else {//已经有合作伙伴不做处理
+
+        }
+        String openId = currentUser.getOpenId();
+        String jwtToken = WebUtil.createTokenByOpenId(openId);
+        String redirect = String.format(ConstantConfig.index, openId, jwtToken);
+        LOGGER.info("index openId={}", openId);
+        LOGGER.info("index jwtToken={}", jwtToken);
+        LOGGER.info("index redirect={}", redirect);
+        LOGGER.info("address redirect={}", ConstantConfig.index);
+        response.sendRedirect(ConstantConfig.myself);
+    }
 
     @GetMapping("/")
     public void login(@RequestParam(name = "code", required = false) String code,
@@ -273,30 +302,6 @@ public class RedirectResource {
     }
 
 
-    /**
-     * @Description: 好友分享 功能
-     * @date 2016年3月19日 下午5:57:52
-     */
-    @RequestMapping("/share")
-    public CustomResponse JSSDK_config(
-            @RequestParam(value = "openId") String openId,
-            @RequestParam(value = "userId", required = false) String userOpenId) {
-        User user = userRepository.findOneByOpenId(userOpenId);
-        if (user == null) {
-            return fail(CustomResponseStatus._40401);
-        }
-        Long userId = user.getId();
-        List<Partner> partners = partnerRepository.findAllByUserId(userId);
-        //检查该微信用户是否已经是公众的关注者
-        User oneByOpenId = userRepository.findOneByOpenId(openId);
-        if (oneByOpenId != null) {//已经是关注者了
-            return fail();
-        } else {//自动注册成为关注者
-            oneByOpenId = new User();
-            oneByOpenId.setOpenId(openId);
-        }
 
-        return success();
-    }
 
 }

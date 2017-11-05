@@ -3,9 +3,11 @@ package com.svlada.endpoint.font;
 import com.svlada.common.WebUtil;
 import com.svlada.common.request.CustomResponse;
 import com.svlada.common.request.CustomResponseStatus;
+import com.svlada.common.utils.DateUtils;
 import com.svlada.component.repository.OrderRepository;
 import com.svlada.component.repository.PartnerRepository;
 import com.svlada.component.repository.UserRepository;
+import com.svlada.endpoint.dto.OrderInfoDto;
 import com.svlada.endpoint.dto.UserDto;
 import com.svlada.entity.Order;
 import com.svlada.entity.Partner;
@@ -14,12 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.svlada.common.request.CustomResponseBuilder.fail;
 import static com.svlada.common.request.CustomResponseBuilder.success;
+import static com.svlada.entity.Order.pay_status_success;
 
 @RestController
 @RequestMapping("/api/font/user")
@@ -90,14 +94,20 @@ public class UserEndpoint {
 
 
     /**
-     * 查看用户合伙人列表
+     * 查看用户合伙人
      * @return
      */
     @GetMapping("/list/partner")
     public CustomResponse partner(){
+        Map<String,String> result = new HashMap<>();
         User user = WebUtil.getCurrentUser();
-        List<Partner> partners = partnerRepository.findAllByUserId(user.getId());
-        return success(partners);
+        Partner partner= partnerRepository.findOneByUserId(user.getId());
+        if (partner!=null){
+            User shareUser = partner.getShareUser();
+            result.put("openId",shareUser.getOpenId());
+            result.put("nickName",shareUser.getNickName());
+        }
+        return success(result);
     }
 
     @Autowired
@@ -110,9 +120,23 @@ public class UserEndpoint {
     @GetMapping("/list/order")
     public CustomResponse order(){
         User user = WebUtil.getCurrentUser();
-        List<Order> orders = orderRepository.findOneByUserId(user.getOpenId());
-        List<Partner> partners = partnerRepository.findAllByUserId(user.getId());
-        return success(partners);
+        List<Order> orders = orderRepository.findOneByUserIdAndPayStatus(user.getOpenId(),pay_status_success);
+        List<OrderInfoDto> orderInfoDtos = new ArrayList<>();
+        for (Order entity:orders){
+            OrderInfoDto orderInfoDto = new OrderInfoDto();
+            orderInfoDto.setBody(entity.getBody());
+            orderInfoDto.setDetails(entity.getDetails());
+            orderInfoDto.setId(entity.getId());
+            orderInfoDto.setOutTradeNo(entity.getOutTradeNo());
+            orderInfoDto.setPaymentDate(DateUtils.getFormatDate(entity.getPaymentDate(),DateUtils.FULL_DATE_FORMAT));
+            orderInfoDto.setPayStatus(entity.getPayStatus());
+            orderInfoDto.setTotalMoney(entity.getTotalMoney());
+            if (entity.getWxpayNotify()!=null){
+                orderInfoDto.setTransactionId(entity.getWxpayNotify().getTransactionId());
+            }
+            orderInfoDtos.add(orderInfoDto);
+        }
+        return success(orderInfoDtos);
     }
 
 }

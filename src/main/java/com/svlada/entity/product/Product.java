@@ -60,6 +60,10 @@ public class Product implements Serializable {
     private Boolean recommend = false;//true：是推荐商品
     private Boolean mailFree = false;//true:是卖家包邮
 
+    public static final Integer CYCLIC_MAX = 5;
+
+    private Boolean cyclic =false;//是否是首页循环滚动的商品.true:是，则将会把detailImages中的第一张图展示在首页进行循环，最多设置5个产品进行循环滚动.
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "activity_id")
     private Activity activity;
@@ -74,6 +78,14 @@ public class Product implements Serializable {
     private Long score;//赠送积分
     private String giftID;//赠品ID
 
+
+    public Boolean getCyclic() {
+        return cyclic;
+    }
+
+    public void setCyclic(Boolean cyclic) {
+        this.cyclic = cyclic;
+    }
 
     public Long getFavorite() {
         return favorite;

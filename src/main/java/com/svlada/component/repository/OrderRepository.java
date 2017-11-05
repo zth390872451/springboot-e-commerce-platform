@@ -11,4 +11,6 @@ public interface OrderRepository extends JpaRepository<Order, Long>  , JpaSpecif
     Order findOneByOutTradeNo(String outTradeNo);
 
     List<Order> findOneByUserId(String userId);
+
+    List<Order> findOneByUserIdAndPayStatus(String openId, Integer payStatus);
 }

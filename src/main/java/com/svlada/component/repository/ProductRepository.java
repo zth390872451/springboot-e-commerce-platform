@@ -19,4 +19,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> , JpaSpe
     Product findOneByCode(String code);
 
     List<Product> findAllByNameContaining(String name, Pageable pageable);
+
+    Long countProductByCyclicIsTrue();
+
+    List<Product> findProductByCyclicIsTrue();
+
+    List<Product> findAllByIdNotInOrderByIdDesc(List<Long> ids);
 }

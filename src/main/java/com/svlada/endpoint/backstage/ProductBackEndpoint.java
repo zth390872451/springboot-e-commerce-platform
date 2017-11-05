@@ -34,8 +34,7 @@ import java.util.*;
 
 import static com.svlada.common.request.CustomResponseBuilder.fail;
 import static com.svlada.common.request.CustomResponseBuilder.success;
-import static com.svlada.common.request.CustomResponseStatus._40000;
-import static com.svlada.common.request.CustomResponseStatus._40401;
+import static com.svlada.common.request.CustomResponseStatus.*;
 
 @RestController
 @RequestMapping("/api/back/product")
@@ -210,7 +209,7 @@ public class ProductBackEndpoint {
         List<DetailsImage> detailImages = detailsImageRepository.findAllByProductIdOrderById(product.getId());
         Map<String,Object> result = new HashMap<>();
         result.put("majorImages",majorImages);
-        if (StringUtils.isEmpty(detailImages)){
+        if (detailImages.size()==0){
             DetailsImage detailsImage = new DetailsImage();
             detailsImage.setImageUrl(ConstantConfig.DEFAULT_PIC);
             detailImages.add(detailsImage);
@@ -242,7 +241,7 @@ public class ProductBackEndpoint {
 
 
 
-    @ApiOperation(value="商品营销策略设置", notes="营销策略：是否包邮、卖家强推、新品上市、特价优惠")
+    @ApiOperation(value="商品营销策略设置", notes="营销策略：是否包邮、卖家强推、新品上市、特价优惠、首页轮询产品")
     /*@ApiImplicitParams({
             @ApiImplicitParam(name = "code", value = "商品ID", paramType = "path", dataType = "String", required = true)
     })*/
@@ -271,6 +270,21 @@ public class ProductBackEndpoint {
                 }
                 product.setSpecialPrice(dto.getSpecialPrice());
             }
+            if (dto.getCyclic()!=null){
+                if (dto.getCyclic()){
+                    //循环滚动最多设置x个产品
+                    Long cyclicIsTrue = productRepository.countProductByCyclicIsTrue();
+                    if (cyclicIsTrue>=Product.CYCLIC_MAX){//超过了设置的最大值5个
+                        return fail(_20002,"循环滚动最多设置5个产品");//循环滚动最多设置5个产品
+                    }
+                    //查询是否有详情图了(轮询必须有)
+                    List<DetailsImage> detailsImages = product.getDetailsImages();
+                    if (detailsImages==null || detailsImages.size()==0){
+                        return fail(_20003, "循环滚动的商品必须有详情图");
+                    }
+                }
+                product.setCyclic(dto.getCyclic());
+            }
             productRepository.save(product);
         }
         return success();
@@ -289,6 +303,5 @@ public class ProductBackEndpoint {
         MarkDto markDto = ProductInfoBuilder.builderMarkDto(product);
         return success(markDto);
     }
-
 
 }

@@ -33,6 +33,18 @@ public class MarkDto implements Serializable{
     @ApiModelProperty(notes="卖家包邮，true:是")
     private Boolean mailFree;//true:是卖家包邮
 
+    @ApiModelProperty(notes="首页循环滚动，true:是")
+    private Boolean cyclic;//true:首页循环滚动
+
+
+    public Boolean getCyclic() {
+        return cyclic;
+    }
+
+    public void setCyclic(Boolean cyclic) {
+        this.cyclic = cyclic;
+    }
+
     public Long getPrice() {
         return price;
     }

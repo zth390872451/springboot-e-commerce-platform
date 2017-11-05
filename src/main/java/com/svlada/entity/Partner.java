@@ -13,12 +13,12 @@ public class Partner implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Long userId;//用户ID
+    @OneToOne
+    @JoinColumn(name="share_user_id")
+    private User shareUser;//分享人【合作伙伴】ID
 
-    //合作伙伴：分享的好友
-    @ManyToOne
-    @JoinColumn(name = "partner_id")
-    private User user;//@ManyToOne中是在本类对应的数据库表中生成外键
+    //根据分享人链接登陆的用户
+    private Long userId;
 
     private Date createDate;
 
@@ -30,20 +30,20 @@ public class Partner implements Serializable{
         this.userId = userId;
     }
 
+    public User getShareUser() {
+        return shareUser;
+    }
+
+    public void setShareUser(User shareUser) {
+        this.shareUser = shareUser;
+    }
+
     public Date getCreateDate() {
         return createDate;
     }
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Long getId() {

@@ -16,5 +16,5 @@ public class ConstantConfig {
     public static final String car = font_host +"/drink/car";
     public static final String myself = font_host +"/drink/myself";
 
-
+    public static final String error_404 = back_host +"/error.html";
 }
