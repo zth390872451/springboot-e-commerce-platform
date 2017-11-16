@@ -37,7 +37,7 @@ import static com.svlada.common.request.CustomResponseBuilder.success;
 import static com.svlada.common.request.CustomResponseStatus.*;
 
 @RestController
-@RequestMapping("/back/product")
+@RequestMapping("/api/back/product")
 public class ProductBackEndpoint {
 
     @Autowired
