@@ -8,6 +8,8 @@ import com.svlada.entity.User;
 import com.svlada.entity.product.DetailsImage;
 import com.svlada.entity.product.MajorImage;
 import com.svlada.entity.product.Product;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -57,8 +60,28 @@ public class ProductService {
         product.setCreateTime(new Date());
         productRepository.save(product);
     }
+    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
 
-
-
-
+    public void setPicService(String detailImageFiles, User user, Product product) {
+        String uuid = UUID.randomUUID().toString();
+        String path = uuid;
+        if (!StringUtils.isEmpty(detailImageFiles)){
+            detailsImageRepository.deleteAllByProductId(product.getId());
+            String detailImagesPath = FileUploadUtils.upload(detailImageFiles, path);
+            if (detailImagesPath!=null){
+                List<String> detailImagesPaths = new ArrayList<String>();
+                detailImagesPaths.add(detailImagesPath);
+                List<DetailsImage> detailImages = detailImagesPaths.stream().map(imageUrl -> new DetailsImage(product, imageUrl)).collect(Collectors.toList());
+                List<DetailsImage> images = product.getDetailsImages();
+                images.addAll(detailImages);
+                detailsImageRepository.save(detailImages);
+                product.setDetailsImages(images);
+            }else {
+             log.error("上传图片失败！");
+            }
+        }
+        product.setCreateID(user.getId());
+        product.setCreateTime(new Date());
+        productRepository.save(product);
+    }
 }

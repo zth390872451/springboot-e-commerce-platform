@@ -26,9 +26,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.Predicate;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -37,7 +37,7 @@ import static com.svlada.common.request.CustomResponseBuilder.success;
 import static com.svlada.common.request.CustomResponseStatus.*;
 
 @RestController
-@RequestMapping("/api/back/product")
+@RequestMapping("/back/product")
 public class ProductBackEndpoint {
 
     @Autowired
@@ -219,7 +219,7 @@ public class ProductBackEndpoint {
     }
 
 
-    @ApiOperation(value="商品图片设置", notes="商品录入：图片信息录入")
+   /* @ApiOperation(value="商品图片设置", notes="商品录入：图片信息录入")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code", value = "商品ID", paramType = "path", dataType = "String", required = true),
             @ApiImplicitParam(name = "majorImageFiles", value = "商品页面轮播图", paramType = "body", dataType = "file", required = false),
@@ -236,8 +236,27 @@ public class ProductBackEndpoint {
         }
         productService.setPicService(majorImageFiles, detailImageFiles, user, product);
         return success();
-    }
+    }*/
 
+    @ApiOperation(value="商品图片设置", notes="商品录入：图片信息录入")
+    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "code", value = "商品ID", paramType = "path", dataType = "String", required = true),
+            @ApiImplicitParam(name = "majorImageFiles", value = "商品页面轮播图", paramType = "body", dataType = "file", required = false),
+            @ApiImplicitParam(name = "detailImageFiles", value = "商品详情页面图", paramType = "body", dataType = "file", required = false)
+    })
+    @PostMapping(value = "/set/pic/{code}")
+    public CustomResponse setPic(@PathVariable("code") String code,
+//                                 @RequestParam(value = "majorImageFiles",required = false) MultipartFile[] majorImageFiles,
+                                 @RequestBody(required = false) String detailImageFiles,
+                                 HttpServletRequest request) {
+        User user = WebUtil.getCurrentUser();
+        Product product = productRepository.findOneByCode(code);
+        if(product==null){
+            return fail(_40401);
+        }
+        productService.setPicService(detailImageFiles, user, product);
+        return success();
+    }
 
 
 

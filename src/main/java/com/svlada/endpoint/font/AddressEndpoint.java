@@ -85,13 +85,13 @@ public class AddressEndpoint {
         if (address == null) {
             return fail(CustomResponseStatus._40400, "地址ID对应的记录不存在!");
         }
-        if (StringUtils.isEmpty(dto.getAddress())) {
+        if (!StringUtils.isEmpty(dto.getAddress())) {
             address.setAddress(dto.getAddress());
         }
-        if (StringUtils.isEmpty(dto.getArea())) {
+        if (!StringUtils.isEmpty(dto.getArea())) {
             address.setArea(dto.getArea());
         }
-        if (StringUtils.isEmpty(dto.getCity())) {
+        if (!StringUtils.isEmpty(dto.getCity())) {
             address.setCity(dto.getCity());
         }
         if (!StringUtils.isEmpty(dto.getDefault())) {
@@ -104,22 +104,22 @@ public class AddressEndpoint {
             }
             address.setDefault(dto.getDefault());
         }
-        if (StringUtils.isEmpty(dto.getMobile())) {
+        if (!StringUtils.isEmpty(dto.getMobile())) {
             address.setMobile(dto.getMobile());
         }
-        if (StringUtils.isEmpty(dto.getName())) {
+        if (!StringUtils.isEmpty(dto.getName())) {
             address.setName(dto.getName());
         }
-        if (StringUtils.isEmpty(dto.getPhone())) {
+        if (!StringUtils.isEmpty(dto.getPhone())) {
             address.setPhone(dto.getPhone());
         }
-        if (StringUtils.isEmpty(dto.getPcaDetail())) {
+        if (!StringUtils.isEmpty(dto.getPcaDetail())) {
             address.setPcaDetail(dto.getPcaDetail());
         }
-        if (StringUtils.isEmpty(dto.getProvince())) {
+        if (!StringUtils.isEmpty(dto.getProvince())) {
             address.setProvince(dto.getProvince());
         }
-        if (StringUtils.isEmpty(dto.getZip())) {
+        if (!StringUtils.isEmpty(dto.getZip())) {
             address.setZip(dto.getZip());
         }
         addressRepository.save(address);
